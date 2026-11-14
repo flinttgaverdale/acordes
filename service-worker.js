@@ -1,37 +1,13 @@
-// Service Worker — Acordes · Afinaciones
-// Soporte offline e instalacion como aplicacion (PWA).
-// Debe ir en la MISMA carpeta que index.html y manifest.json.
-
-const CACHE = "acordes-v1";
-const ASSETS = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
-
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then((c) => Promise.all(ASSETS.map((u) => c.add(u).catch(() => {}))))
-      .then(() => self.skipWaiting())
-  );
-});
-
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
-  event.respondWith(
-    caches.match(event.request).then((hit) => {
-      if (hit) return hit;
-      return fetch(event.request).then((res) => {
-        if (!res || res.status !== 200 || res.type !== "basic") return res;
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(event.request, copy));
-        return res;
-      }).catch(() => caches.match("./index.html"));
-    })
-  );
+// Acordes · Círculo de quintas — PWA cache v2
+const CACHE="acordes-circulo-v2";
+const ASSETS=["./","./index.html","./manifest.json","./icon-192.png","./icon-512.png"];
+self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>Promise.all(ASSETS.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting())));
+self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener("fetch",e=>{
+ if(e.request.method!=="GET")return;
+ if(e.request.mode==="navigate"){
+  e.respondWith(fetch(e.request).then(res=>{if(res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));}return res;}).catch(()=>caches.match(e.request).then(v=>v||caches.match("./index.html"))));
+  return;
+ }
+ e.respondWith(caches.match(e.request).then(hit=>hit||fetch(e.request).then(res=>{if(res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));}return res;})));
 });
