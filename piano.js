@@ -1,48 +1,28 @@
-/* Piano: inversiones estrictas para tríadas y séptimas;
-   voicings útiles y omisiones explícitas para extensiones y jazz. */
+/* Piano · Solo acordes básicos e inversiones completas.
+   Se han eliminado las tensiones 9, 11, 13 y todos los voicings
+   parciales/alterados, manteniendo la guitarra sin cambios. */
 "use strict";
 let instrument="guitar";
 let savedPianoSelection=null;
 const GUITAR_QUALITIES=["maj","min","7","maj7","m7","dim","sus2","sus4","m7b5"];
-/* Selector voluntariamente limitado a siete tipos, como pidió el usuario.
-   El círculo de quintas conserva sus acordes diatónicos. */
 const PIANO_CHOICES=[
-  ["9","9"],["11","11"],["13","13"],
-  ["7","7"],["maj7","Maj7"],["sus2","sus2"],["sus4","sus4"]
+  ["maj","Mayor"],["min","Menor"],["7","7"],
+  ["maj7","Maj7"],["sus2","sus2"],["sus4","sus4"]
 ];
-const PIANO_EXTRA_GROUPS=[{label:"Acordes",options:PIANO_CHOICES}];
-const PIANO_DEFINITIONS={
-  "9":[0,4,7,10,14],
-  "11":[0,4,7,10,14,17],
-  // En el dominante 13 la 11 natural no suele aparecer en la digitación.
-  "13":[0,4,7,10,14,21]
-};
-const PIANO_CORE={
-  "9":[4,10,14],
-  // La 11 natural choca con la tercera mayor; el voicing omite la 3.
-  "11":[10,14,17],
-  "13":[4,10,14,21]
-};
-Object.keys(PIANO_DEFINITIONS).forEach(key=>{
-  QUALITIES[key]={name:key,int:PIANO_DEFINITIONS[key].slice()};
-  SUFFIX[key]={"7b9":"7(♭9)","7#9":"7(♯9)","maj7#11":"maj7(♯11)"}[key]||key;
-});
 function pianoIntervals(qual){
-  return PIANO_DEFINITIONS[qual] || QUALITIES[qual].int.slice().map((v,i)=>{
-    if(v===2&&i>=3)return 14;
-    return v;
-  });
+  if(!Object.prototype.hasOwnProperty.call(QUALITIES,qual))throw Error("Acorde desconocido: "+qual);
+  return QUALITIES[qual].int.slice();
 }
 function pianoDegree(interval,qual){
   if(qual==="dim7"&&interval===9)return 6;
   if(interval===0)return 0;
-  if([1,2,13,14,15].includes(interval))return 1;
+  if([1,2].includes(interval))return 1;
   if([3,4].includes(interval))return 2;
-  if([5,17,18].includes(interval))return 3;
+  if(interval===5)return 3;
   if([6,7,8].includes(interval))return 4;
-  if([9,20,21].includes(interval))return 5;
+  if(interval===9)return 5;
   if([10,11].includes(interval))return 6;
-  return 0;
+  throw Error("Intervalo no admitido en piano básico: "+interval);
 }
 function pianoNoteSpelling(root,interval,qual){
   const rootLetter=LETTERS.indexOf(root[0]);
@@ -53,74 +33,25 @@ function pianoNoteSpelling(root,interval,qual){
   return letter+(accidental===undefined?"":accidental);
 }
 function pianoChordNames(chord){
-  const list=pianoIntervals(chord.qual),map=new Map();
-  list.forEach(int=>map.set(mod12(PC[chord.root]+int),pianoNoteSpelling(chord.root,int,chord.qual)));
+  const map=new Map();
+  pianoIntervals(chord.qual).forEach(int=>
+    map.set(mod12(PC[chord.root]+int),pianoNoteSpelling(chord.root,int,chord.qual))
+  );
   return map;
 }
-function pianoName(midi,map){
-  const pc=mod12(midi),name=map.get(pc)||spell(pc,false);
-  return name+(Math.floor(midi/12)-1);
+function pianoName(midi,names){
+  return (names.get(mod12(midi))||spell(mod12(midi),false))+(Math.floor(midi/12)-1);
 }
 function pianoVoicings(chord){
-  const intervals=pianoIntervals(chord.qual),rootPc=PC[chord.root];
-  const lowRoot=48+rootPc,highRoot=60+rootPc;
-  const chordPcs=[...new Set(intervals.map(x=>mod12(rootPc+x)))];
-  const extended=Object.prototype.hasOwnProperty.call(PIANO_CORE,chord.qual);
-  if(!extended){
-    const ints=[...new Set(intervals.map(x=>mod12(x)))].sort((a,b)=>a-b);
-    return ints.map((_,i)=>{
-      const rotated=ints.slice(i).concat(ints.slice(0,i).map(x=>x+12));
-      const notes=rotated.map(x=>highRoot+x);
-      return {
-        title:["Fundamental","1.ª inversión","2.ª inversión","3.ª inversión"][i]||("Inversión "+i),
-        bass:notes[0],left:[],right:notes,omitted:[],kind:"inversion"
-      };
-    });
-  }
-  const core=PIANO_CORE[chord.qual];
-  const pitchClass=(x)=>mod12(rootPc+x);
-  const sorted=[...new Set(core.map(pitchClass))].sort((a,b)=>a-b);
-  function rightKeys(rotate){
-    const order=sorted.slice(rotate).concat(sorted.slice(0,rotate).map(x=>x+12));
-    let previous=-Infinity;
-    return order.map(pc=>{
-      let n=60+pc;
-      while(n<=previous)n+=12;
-      previous=n;
-      return n;
-    });
-  }
-  // Mano derecha compacta: los intervalos pueden reorganizarse dentro de una octava.
-  // Rotar notas produce otras disposiciones, pero no se etiquetan como inversiones del acorde.
-  const shell=core.find(x=>[10,11,9].includes(x)) ?? core[1];
-  const shellMidi=lowRoot+shell;
-  const leftRoot=[lowRoot];
-  let variants=[
-    {title:"Cerrado",left:leftRoot,right:rightKeys(0)},
-    {title:"Abierto",left:leftRoot,right:rightKeys(1)},
-    {title:"Bajo con 7.ª / 6.ª",left:[lowRoot,shellMidi],right:rightKeys(2).filter(n=>mod12(n)!==pitchClass(shell))}
-  ];
-  if(core.includes(3)||core.includes(4)){
-    const third=core.find(x=>x===3||x===4);
-    const thirdMidi=lowRoot+third;
-    const lhShell=[thirdMidi,shellMidi].sort((a,b)=>a-b);
-    const rh=core.filter(x=>x!==third&&x!==shell);
-    const pcs=[...new Set(rh.map(pitchClass))].sort((a,b)=>a-b);
-    let right=pcs.map(pc=>60+pc);
-    while(right.length&&Math.min(...right)<=Math.max(...lhShell))right=right.map(n=>n+12);
-    variants.push({title:"Sin fundamental · con bajista",left:lhShell,right});
-  }else{
-    variants.push({title:"Otra disposición",left:leftRoot,right:rightKeys(2)});
-  }
-  variants=variants.map(v=>{
-    let right=v.right.slice();
-    while(right.length&&Math.min(...right)<=Math.max(...v.left))right=right.map(n=>n+12);
-    return {...v,right};
-  });
-  return variants.map(v=>{
-    const present=new Set(v.left.concat(v.right).map(mod12));
-    const omitted=intervals.filter(x=>!present.has(mod12(rootPc+x))).map(x=>pianoNoteSpelling(chord.root,x,chord.qual));
-    return {...v,bass:Math.min(...v.left.concat(v.right)),omitted,kind:"voicing"};
+  const rootPc=PC[chord.root];
+  const pitchClasses=[...new Set(pianoIntervals(chord.qual).map(mod12))].sort((a,b)=>a-b);
+  return pitchClasses.map((_,i)=>{
+    const rotated=pitchClasses.slice(i).concat(pitchClasses.slice(0,i).map(n=>n+12));
+    const right=rotated.map(n=>60+rootPc+n);
+    return {
+      title:i===0?"Fundamental":i+".ª inversión",
+      bass:right[0],left:[],right,omitted:[],kind:"inversion"
+    };
   });
 }
 function pianoSvg(voice,names){
@@ -154,22 +85,23 @@ function pianoSvg(voice,names){
   return svg+'</svg>';
 }
 function renderPiano(){
-  const c=currentChord();
-  const voices=pianoVoicings(c),names=pianoChordNames(c);
-  const isInversions=voices[0]&&voices[0].kind==="inversion";
-  document.getElementById("resultKind").textContent=isInversions?"Inversiones de ":"Voicings de ";
+  const c=currentChord(),names=pianoChordNames(c);
+  const voices=pianoVoicings(c);
+  document.getElementById("resultKind").textContent="Inversiones de ";
   document.getElementById("chosenChord").textContent=c.name;
-  document.getElementById("notesLine").textContent=pianoIntervals(c.qual).map(x=>pianoNoteSpelling(c.root,x,c.qual)).join(" · ");
-  document.getElementById("count").textContent=voices.length+" "+(isInversions?"posiciones":"voicings");
+  document.getElementById("notesLine").textContent=pianoIntervals(c.qual).map(
+    x=>pianoNoteSpelling(c.root,x,c.qual)
+  ).join(" · ");
+  document.getElementById("count").textContent=voices.length+" posiciones";
   document.getElementById("shapes").innerHTML=voices.map((v,i)=>{
-    const left=v.left.map(n=>pianoName(n,names)).join(" · ");
-    const right=v.right.map(n=>pianoName(n,names)).join(" · ");
-    const bass=pianoName(v.bass,names);
-    const notes=v.left.length?'<div class="piano-hand"><b>Izquierda</b> '+left+'</div><div class="piano-hand"><b>Derecha</b> '+right+'</div>':
-      '<div class="piano-hand">Teclas: '+right+'</div>';
-    const omitted=v.omitted.length?'<div class="piano-omitted">Omitidas en esta disposición: '+v.omitted.join(" · ")+'</div>':"";
-    return '<article class="shape piano-card"><div class="head"><span class="cname">'+(i+1)+'. '+v.title+'</span><span class="pos">Bajo: '+bass+'</span></div>'+
-      '<div class="piano-keyboard">'+pianoSvg(v,names)+'</div>'+notes+omitted+'</article>';
+    const bass=names.get(mod12(v.bass));
+    const symbol=c.name+(i===0?"":"/"+bass);
+    const pitches=v.right.map(n=>pianoName(n,names)).join(" · ");
+    return '<article class="shape piano-card"><div class="head">'+
+      '<span class="cname">'+(i+1)+'. '+symbol+'</span>'+
+      '<span class="pos">'+v.title+'</span></div>'+
+      '<div class="piano-keyboard">'+pianoSvg(v,names)+'</div>'+
+      '<div class="piano-hand">Notas: '+pitches+'</div></article>';
   }).join("");
 }
 function fillPianoQualities(){
@@ -200,8 +132,7 @@ const guitarChords=drawChords;
 drawChords=function(){
   guitarChords();
   document.getElementById("extraToggle").textContent=custom?
-    "Volver a los acordes de la tonalidad":
-    (instrument==="piano"?"Elegir otro acorde":"Elegir otro acorde");
+    "Volver a los acordes de la tonalidad":"Elegir otro acorde";
 };
 function switchInstrument(next){
   if(next===instrument)return;
@@ -219,7 +150,7 @@ function switchInstrument(next){
   document.getElementById("legendPiano").hidden=!piano;
   document.getElementById("appSubtitle").textContent="Círculo de quintas · "+(piano?"Piano":"Guitarra");
   document.getElementById("footerText").textContent=piano?
-    "Inversiones exactas y voicings de jazz: la quinta puede omitirse en acordes extendidos":
+    "Acordes básicos e inversiones completas, con todas sus notas":
     "Posiciones calculadas según la afinación seleccionada";
   document.getElementById("tuningIndex").textContent="01";
   document.getElementById("keyIndex").textContent=piano?"01":"02";
@@ -232,7 +163,7 @@ function switchInstrument(next){
   if(piano&&savedPianoSelection){
     document.getElementById("root").value=savedPianoSelection.root;
     quality.value=[...quality.options].some(o=>o.value===savedPianoSelection.qual)?
-      savedPianoSelection.qual:"9";
+      savedPianoSelection.qual:"maj";
     custom=true;
   }
   document.getElementById("resultKind").textContent=piano?"Inversiones de ":"Posiciones de ";
