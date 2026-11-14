@@ -476,7 +476,7 @@ function pickBest(shapes){
 function svgDiagram(shape,tns){
  const played=shape.frets.filter(f=>f>0);
  const minF=played.length?Math.min(...played):1;
- const startFret=minF<=4?1:minF;
+ const startFret=(minF<=4 && shape.maxF<=5)?1:minF;
  const nStrings=tns.length,padL=20,padT=27,stepX=19,stepY=24,count=5;
  const sx=i=>padL+i*stepX, fy=i=>padT+i*stepY;
  const w=padL*2+(nStrings-1)*stepX,h=padT+count*stepY+9;
