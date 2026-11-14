@@ -4,35 +4,41 @@
 let instrument="guitar";
 let savedPianoSelection=null;
 const GUITAR_QUALITIES=["maj","min","7","maj7","m7","dim","sus2","sus4","m7b5"];
+/* Selección musical deliberadamente corta: 9, m11, 13 y
+   alteraciones muy habituales. El acorde maj11 natural no es una
+   recomendación estándar por el choque entre 3.ª mayor y 11 natural. */
 const PIANO_EXTRA_GROUPS=[
- {label:"Extensiones",options:[["add9","add9"],["9","9"],["maj9","maj9"],["m9","m9"],["11","11"],["maj11","maj11"],["m11","m11"],["13","13"],["maj13","maj13"],["m13","m13"]]},
- {label:"Jazz y alterados",options:[["6/9","6/9"],["m6/9","m6/9"],["9sus4","9sus4"],["7b9","7♭9"],["7#9","7♯9"],["7#11","7♯11"],["maj7#11","maj7♯11"],["7b13","7♭13"],["7b5","7♭5"],["7#5","7♯5"],["mM7","m(maj7)"],["dim7","dim7"]]}
+  {label:"Extensiones habituales",options:[
+    ["add9","add9"],["9","9"],["maj9","maj9"],["m9","m9"],
+    ["m11","m11"],["13","13"]
+  ]},
+  {label:"Jazz · selección",options:[
+    ["6/9","6/9"],["9sus4","9sus4"],
+    ["7b9","7(♭9)"],["7#9","7(♯9)"],["maj7#11","maj7(♯11)"]
+  ]}
 ];
 const PIANO_DEFINITIONS={
- "add9":[0,4,7,14],
- "9":[0,4,7,10,14], "maj9":[0,4,7,11,14],"m9":[0,3,7,10,14],
- "11":[0,4,7,10,14,17],"maj11":[0,4,7,11,14,17],"m11":[0,3,7,10,14,17],
- "13":[0,4,7,10,14,17,21],"maj13":[0,4,7,11,14,17,21],"m13":[0,3,7,10,14,17,21],
- "6/9":[0,4,7,9,14],"m6/9":[0,3,7,9,14],
- "9sus4":[0,5,7,10,14],
- "7b9":[0,4,7,10,13],"7#9":[0,4,7,10,15],"7#11":[0,4,7,10,18],
- "maj7#11":[0,4,7,11,18],"7b13":[0,4,7,10,20],
- "7b5":[0,4,6,10],"7#5":[0,4,8,10]
+  "add9":[0,4,7,14],
+  "9":[0,4,7,10,14], "maj9":[0,4,7,11,14], "m9":[0,3,7,10,14],
+  "m11":[0,3,7,10,14,17],
+  // C13 en práctica jazzística: 1,3,5,b7,9,13; evitar la 11 natural contra la 3.
+  "13":[0,4,7,10,14,21],
+  "6/9":[0,4,7,9,14],
+  "9sus4":[0,5,7,10,14],
+  "7b9":[0,4,7,10,13], "7#9":[0,4,7,10,15],
+  "maj7#11":[0,4,7,11,18]
 };
 const PIANO_CORE={
- "add9":[4,7,14], "9":[4,10,14],"maj9":[4,11,14],"m9":[3,10,14],
- "11":[10,14,17],"maj11":[11,14,17],"m11":[3,10,14,17],
- "13":[4,10,14,21],"maj13":[4,11,14,21],"m13":[3,10,14,21],
- "6/9":[4,9,14],"m6/9":[3,9,14],"9sus4":[5,10,14],
- "7b9":[4,10,13],"7#9":[4,10,15],"7#11":[4,10,18],
- "maj7#11":[4,11,18],"7b13":[4,10,20]
-};
-const PIANO_ENHARMONIC={
- "7b5":[0,4,6,10], "7#5":[0,4,8,10]
+  "add9":[4,7,14],
+  "9":[4,10,14], "maj9":[4,11,14], "m9":[3,10,14],
+  "m11":[3,10,14,17], "13":[4,10,14,21],
+  "6/9":[4,9,14], "9sus4":[5,10,14],
+  "7b9":[4,10,13], "7#9":[4,10,15],
+  "maj7#11":[4,11,18]
 };
 Object.keys(PIANO_DEFINITIONS).forEach(key=>{
   QUALITIES[key]={name:key,int:PIANO_DEFINITIONS[key].slice()};
-  SUFFIX[key]=key;
+  SUFFIX[key]={"7b9":"7(♭9)","7#9":"7(♯9)","maj7#11":"maj7(♯11)"}[key]||key;
 });
 function pianoIntervals(qual){
   return PIANO_DEFINITIONS[qual] || QUALITIES[qual].int.slice().map((v,i)=>{
@@ -184,7 +190,7 @@ function fillPianoQualities(){
   const prev=select.value;
   select.innerHTML="";
   const simple=document.createElement("optgroup");simple.label="Básicos";
-  (instrument==="piano"?GUITAR_QUALITIES.concat(["6","m6","aug"]):GUITAR_QUALITIES).forEach(key=>{
+  (instrument==="piano"?GUITAR_QUALITIES.concat(["dim7","6","m6","aug"]):GUITAR_QUALITIES).forEach(key=>{
     if(!QUALITIES[key])return;
     const o=document.createElement("option");o.value=key;o.textContent=key==="maj"?"Mayor":key==="min"?"Menor":key==="mM7"?"m(maj7)":key;
     simple.appendChild(o);
@@ -211,7 +217,7 @@ drawChords=function(){
   guitarChords();
   document.getElementById("extraToggle").textContent=custom?
     "Volver a los acordes de la tonalidad":
-    (instrument==="piano"?"Explorar 9 · 11 · 13 y jazz":"Elegir otro acorde");
+    (instrument==="piano"?"Explorar extensiones y jazz":"Elegir otro acorde");
 };
 function switchInstrument(next){
   if(next===instrument)return;
@@ -241,7 +247,8 @@ function switchInstrument(next){
   }
   if(piano&&savedPianoSelection){
     document.getElementById("root").value=savedPianoSelection.root;
-    quality.value=savedPianoSelection.qual;
+    quality.value=[...quality.options].some(o=>o.value===savedPianoSelection.qual)?
+      savedPianoSelection.qual:"maj";
     custom=true;
   }
   document.getElementById("resultKind").textContent=piano?"Inversiones de ":"Posiciones de ";
