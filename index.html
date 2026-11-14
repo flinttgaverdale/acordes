@@ -139,55 +139,98 @@
 
   /* ---------- divisor sutil ---------- */
   .rule{height:1px;background:var(--line);border:none;margin:26px 0;}
+
+/* Interfaz simplificada: círculo + elección + cuatro posiciones */
+:root{--bg:#121619;--surface:#1b2124;--surface2:#242c2f;--line:#323b3d;--line2:#455053;--txt:#f1f0e9;--dim:#adb6b3;--dim2:#87938f;--accent:#dfba7b;--accent-ink:#252018}
+html,body{max-width:none}
+body{max-width:1040px;padding:25px 23px 60px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+header h1{font-size:1.65rem;letter-spacing:-.035em}
+header .sub{font-size:.84rem}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+.topline{font-size:.7rem;color:var(--dim2);text-transform:uppercase;letter-spacing:.12em}
+.sectionhead{font-size:1rem;font-weight:650;margin:0 0 13px;letter-spacing:-.015em}
+.num{color:var(--accent);font-size:.74rem;margin-right:7px}
+.tuning-panel{display:flex;gap:17px;align-items:center;justify-content:space-between;margin-bottom:15px}
+.tuning-panel .sectionhead{margin:0}
+.tuning-right{display:flex;align-items:center;gap:11px}
+#preset{width:220px}
+#strings{display:flex;gap:5px}
+.stringnote{min-width:28px;text-align:center;background:var(--surface2);border:1px solid var(--line2);color:var(--dim);padding:8px 5px;border-radius:8px;font-size:.78rem;font-weight:600}
+.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+#circle{display:flex;align-items:center;justify-content:center;min-height:325px}
+#circle svg{width:100%;max-width:345px;display:block}
+.wheel-sector{cursor:pointer;transition:filter .16s}
+.wheel-sector:hover{filter:brightness(1.2)}
+.wheel-sector:focus-visible{outline:none;filter:brightness(1.2)}
+.wheel-sector path{stroke:var(--bg);stroke-width:2}
+.wheel-sector text{pointer-events:none}
+.wheelhint{text-align:center;font-size:.76rem;color:var(--dim);margin:6px 0 0}
+.wheelhint b{color:var(--txt)}
+.currentkey{font-size:1.7rem;font-weight:700;letter-spacing:-.045em;margin:4px 0 2px}
+.keyhint{font-size:.8rem;color:var(--dim);margin:0 0 15px}
+.chordmode{display:flex;gap:4px;padding:4px;background:var(--bg);border:1px solid var(--line);border-radius:11px;width:max-content;max-width:100%;margin-bottom:13px}
+.chordmode button{background:none;color:var(--dim);border:0;padding:8px 13px;border-radius:8px;cursor:pointer;font-size:.84rem}
+.chordmode button.on{background:var(--accent);color:var(--accent-ink);font-weight:680}
+#degreeChords{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.degree{display:flex;align-items:center;gap:10px;background:var(--surface2);color:var(--txt);border:1px solid var(--line2);border-radius:11px;min-height:56px;text-align:left;padding:9px 11px;cursor:pointer}
+.degree .roman{color:var(--dim2);font-size:.73rem;min-width:30px}
+.degree strong{font-size:1.1rem;white-space:nowrap}
+.degree.on{background:#382f22;border-color:var(--accent)}
+.degree.on .roman{color:var(--accent)}
+#extraToggle{display:block;background:transparent;border:0;padding:13px 0 0;color:var(--dim);font-size:.8rem;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+#extraBox{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+#extraBox .grid2 select{width:100%}
+.results-panel{margin-top:15px}
+.results-top{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:14px}
+.results-top .sectionhead{margin:0 0 3px}
+#chosenChord{color:var(--accent)}
+#notesLine{font-size:.8rem;color:var(--dim)}
+#count{font-size:.79rem;white-space:nowrap;color:var(--dim);margin:5px 0 0}
+.shapes{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.shape{background:var(--surface2);padding:14px 8px;border-color:var(--line2)}
+.shape .head{justify-content:space-between;gap:7px;margin:0 5px 9px}
+.shape .cname{font-size:.92rem;color:var(--accent)}
+.shape .pos{font-size:.66rem}
+.diagwrap{width:100%}
+svg.diag{width:100%;max-width:171px;height:auto}
+table.tab{width:auto;margin:10px auto 0}
+table.tab .fretxt{font-size:.8rem}
+#empty{color:var(--dim);font-size:.85rem;padding:15px}
+.legend{font-size:.78rem;color:var(--dim);margin:12px 0 0}
+.legend b{color:var(--accent)}
+footer{text-align:center;font-size:.74rem;color:var(--dim2);margin:28px 0 0}
+[hidden]{display:none!important}
+@media(max-width:760px){body{padding:17px 13px 45px}.main-grid{grid-template-columns:1fr}.shapes{grid-template-columns:repeat(2,minmax(0,1fr))}.tuning-panel{flex-wrap:wrap;align-items:start}.tuning-panel .sectionhead{margin:0}.tuning-right{width:100%;justify-content:space-between}.topline{display:none}#circle{min-height:0}#circle svg{max-width:315px}}
+@media(max-width:440px){.panel{padding:14px}.tuning-panel{gap:10px}.tuning-right{display:block}#preset{width:100%;margin-bottom:9px}#strings{justify-content:center}.stringnote{flex:1}.degree strong{font-size:1rem}.shape{padding:12px 5px}.shape .head{margin:0 4px 8px}.shape .pos{font-size:.59rem}.results-top{align-items:start}.wheelhint{font-size:.72rem}}
+
 </style>
 </head>
 <body>
-
-<header>
-  <h1>Acordes</h1>
-  <p class="sub">Escribe el acorde y elige la afinación</p>
-</header>
-
-<!-- ============ AFINACIÓN ============ -->
-<section>
-  <label class="lbl">Afinación</label>
-  <select id="preset"></select>
-
-  <div class="tuner" id="tuner"></div>
-  <div class="meta" id="tuningInfo"></div>
+<header><div><h1>Acordes</h1><p class="sub">Círculo de quintas · Guitarra</p></div><div class="topline">6 CUERDAS</div></header>
+<section class="panel tuning-panel">
+<h2 class="sectionhead"><span class="num">01</span> Afinación</h2>
+<div class="tuning-right"><select id="preset" aria-label="Afinación"></select><div id="strings" aria-label="Notas de cuerda grave a aguda"></div></div>
 </section>
-
-<!-- ============ ACORDE ============ -->
-<section>
-  <label class="lbl">Escribe el acorde</label>
-  <input type="text" id="chordInput" placeholder="Cmaj7"
-         autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-
-  <div class="hint" id="parseInfo"></div>
-
-  <div class="chips" id="quick"></div>
-
-  <div class="toggle">
-    <button id="btnBasic" class="on">Esenciales</button>
-    <button id="btnAll">Todas</button>
-  </div>
-
-  <label class="lbl" style="margin-top:10px;">Capo (opcional)</label>
-  <select id="capo"></select>
-
-  <div class="grid2" style="margin-top:10px;">
-    <select id="root"></select>
-    <select id="quality"></select>
-  </div>
+<main class="main-grid">
+<section class="panel"><h2 class="sectionhead"><span class="num">02</span> Tonalidad</h2><div id="circle" aria-label="Círculo de quintas interactivo"></div><p class="wheelhint"><b>Exterior</b> mayor &nbsp;·&nbsp; <b>Interior</b> menor</p></section>
+<section class="panel">
+<h2 class="sectionhead"><span class="num">03</span> Acorde</h2>
+<div class="currentkey" id="keyName">Do mayor</div><p class="keyhint" id="keyHint">Elige uno de los acordes de la tonalidad.</p>
+<div class="chordmode"><button type="button" id="triads" class="on" aria-pressed="true">Tríadas</button><button type="button" id="sevenths" aria-pressed="false">Séptimas</button></div>
+<div id="degreeChords" aria-label="Acordes de la tonalidad"></div>
+<button type="button" id="extraToggle" aria-expanded="false">Elegir otro acorde</button>
+<div id="extraBox" hidden><div class="grid2"><select id="root" aria-label="Nota fundamental"></select><select id="quality" aria-label="Tipo de acorde"></select></div></div>
 </section>
-
-<div class="rule"></div>
-
-<!-- ============ RESULTADOS ============ -->
-<div class="count" id="count"></div>
-<div class="shapes" id="shapes"></div>
-
+</main>
+<section class="panel results-panel" id="results">
+<div class="results-top"><div><h2 class="sectionhead"><span class="num">04</span> Posiciones de <span id="chosenChord">C</span></h2><div id="notesLine">C · E · G</div></div><div id="count">4 diagramas</div></div>
+<div class="shapes" id="shapes" aria-live="polite"></div>
+<p class="legend"><b>●</b> traste pulsado &nbsp;·&nbsp; ○ cuerda al aire &nbsp;·&nbsp; × no tocar. Diagramas: 6.ª cuerda a 1.ª.</p>
+</section>
+<footer>Posiciones calculadas según la afinación seleccionada</footer>
 <script>
+
 "use strict";
 
 /* ============================================================
@@ -202,28 +245,10 @@ const PC = {"C":0,"C#":1,"Db":1,"D":2,"D#":3,"Eb":3,"E":4,"F":5,"F#":6,"Gb":6,
    AFINACIONES PRECARGADAS  (de la 6ª grave a la 1ª aguda)
    ============================================================ */
 const TUNINGS = {
-  standard:  { name:"Estándar (E A D G B E)", notes:["E","A","D","G","B","E"] },
-  dropD:     { name:"Drop D (D A D G B E)",   notes:["D","A","D","G","B","E"] },
-  halfStep:  { name:"Medio tono abajo (Eb)",  notes:["Eb","Ab","Db","Gb","Bb","Eb"] },
-  fullStep:  { name:"Un tono abajo (D)",      notes:["D","G","C","F","A","D"] },
-  dropC:     { name:"Drop C (C G C F A D)",   notes:["C","G","C","F","A","D"] },
-  dadgad:    { name:"DADGAD",                 notes:["D","A","D","G","A","D"] },
-  openG:     { name:"Open G (D G D G B D)",   notes:["D","G","D","G","B","D"] },
-  openD:     { name:"Open D (D A D F# A D)",  notes:["D","A","D","F#","A","D"] },
-  openE:     { name:"Open E (E B E G# B E)",  notes:["E","B","E","G#","B","E"] },
-  openC:     { name:"Open C (C G C G C E)",   notes:["C","G","C","G","C","E"] },
-  openA:     { name:"Open A (E A C# E A E)",  notes:["E","A","C#","E","A","E"] },
-  openF:     { name:"Open F (C F C F A F)",   notes:["C","F","C","F","A","F"] },
-  openEm:    { name:"Open Em (E B E G B E)",  notes:["E","B","E","G","B","E"] },
-  openGm:    { name:"Open Gm (D G D G Bb D)", notes:["D","G","D","G","Bb","D"] },
-  openDm:    { name:"Open Dm (D A D F A D)",  notes:["D","A","D","F","A","D"] },
-  modalD:    { name:"Modal D (D A D G A D)",  notes:["D","A","D","G","A","D"] },
-  modalG:    { name:"Modal G (D G D G C D)",  notes:["D","G","D","G","C","D"] },
-  dropB:     { name:"Drop B (B F# B E G# C#)",notes:["B","F#","B","E","G#","C#"] },
-  nst:       { name:"NST / Fripp (C G D A E G)",notes:["C","G","D","A","E","G"] },
-  russian:   { name:"Rusa / Open G 7c (D G B D G D)", notes:["D","G","B","D","G","D"] },
-  cuatro:    { name:"Cuatro venezolano (A D F# B)", notes:["A","D","F#","B"] },
-  bajo4:     { name:"Bajo (E A D G)",         notes:["E","A","D","G"] }
+ standard: {name:"Standard · E A D G B E", notes:["E","A","D","G","B","E"]},
+ openD: {name:"Open D · D A D F# A D", notes:["D","A","D","F#","A","D"]},
+ dadgad: {name:"DADGAD · D A D G A D", notes:["D","A","D","G","A","D"]},
+ cgdggd: {name:"CGDGGD · C G D G G D", notes:["C","G","D","G","G","D"]}
 };
 
 /* ============================================================
@@ -384,553 +409,236 @@ function preferFlatFor(rootName){
   return rootName.includes("b");
 }
 
-/* ============================================================
-   BÚSQUEDA DE POSICIONES
-   ------------------------------------------------------------
-   Para cada combinación de trastes (0..MAX_FRET) en cada cuerda,
-   comprobamos si el conjunto de notas suena es el acorde pedido.
-   ============================================================ */
-function findShapes(rootPc, qualKey, tns, capo){
-  const qual = QUALITIES[qualKey];
-  const chordPcs = qual.int.map(i => mod12(rootPc + i));
-  const nStrings = tns.length;
-  const requiredPcs = [...new Set(chordPcs)];
-  const bassPc = rootPc;   // la nota más grave debe ser la fundamental (o su octava)
 
-  const results = [];
 
-  // --- generamos todas las combinaciones válidas con recursión ---
-  // Cada cuerda puede estar: muda (-1) o pisada en traste 0..MAX_FRET
-  const chosen = new Array(nStrings).fill(0);
-
-  function pcAt(s, fret){
-    return mod12(pcOf(tns[s]) + fret + capo);
-  }
-
-  // Comprueba si la combinación actual es un acorde válido
-  function evaluate(){
-    const sounding = [];
-    for (let s = 0; s < nStrings; s++){
-      if (chosen[s] >= 0) sounding.push({ s, fret: chosen[s], pc: pcAt(s, chosen[s]) });
-    }
-    // Al menos 4 cuerdas sonando y todas las notas del acorde presentes
-    if (sounding.length < Math.max(MIN_STRINGS, requiredPcs.length)) return null;
-
-    // No permitir cuerdas mudas "en medio" salvo que sea en los bordes
-    let firstSound = -1, lastSound = -1;
-    for (let s2 = 0; s2 < nStrings; s2++){
-      if (chosen[s2] >= 0){ if (firstSound < 0) firstSound = s2; lastSound = s2; }
-    }
-    for (let s2 = firstSound + 1; s2 < lastSound; s2++){
-      if (chosen[s2] < 0) return null;   // sin huecos interiores
-    }
-
-    // El bajo (cuerda más grave que suena) debe ser la fundamental
-    if (sounding[0].pc !== bassPc) return null;
-
-    // Todas las notas deben pertenecer al acorde
-    for (const n of sounding){
-      if (!chordPcs.includes(n.pc)) return null;
-    }
-
-    // Todas las notas del acorde deben aparecer al menos una vez
-    const present = new Set(sounding.map(n => n.pc));
-    for (const r of requiredPcs){
-      if (!present.has(r)) return null;
-    }
-
-    // Abertura razonable (que no sea un salto enorme por el mástil)
-    const frets = sounding.map(n => n.fret).filter(f => f > 0);
-    const span = frets.length ? (Math.max(...frets) - Math.min(...frets)) : 0;
-    if (frets.length && span > SPAN_MAX) return null;
-
-    return { frets: chosen.slice(), span, sounding };
-  }
-
-  function recurse(s){
-    if (s === nStrings){
-      const r = evaluate();
-      if (r) results.push(r);
-      return;
-    }
-    // Probar: muda y trastes 0..MAX_FRET
-    for (let f = -1; f <= MAX_FRET; f++){
-      chosen[s] = f;
-      recurse(s+1);
-    }
-  }
-
-  // La búsqueda completa es grande; la limitamos con poda.
-  // Estrategia: elegimos primero el traste del bajo (0..MAX_FRET) y luego el resto.
-  function recurse2(s){
-    if (s === nStrings){
-      const r = evaluate();
-      if (r) results.push(r);
-      return;
-    }
-    if (s === 0){
-      // La cuerda más grave: solo trastes donde la nota sea la fundamental
-      for (let f = 0; f <= MAX_FRET; f++){
-        if (pcAt(0, f) !== bassPc) continue;
-        chosen[0] = f;
-        recurse2(1);
-      }
-      return;
-    }
-    for (let f = -1; f <= MAX_FRET; f++){
-      chosen[s] = f;
-      recurse2(s+1);
-    }
-  }
-
-  recurse2(0);
-
-  // --- deduplicar y ordenar ---
-  const seen = new Set();
-  const unique = [];
-  for (const r of results){
-    const key = r.frets.join(",");
-    if (seen.has(key)) continue;
-    seen.add(key);
-    unique.push(r);
-  }
-
-  // Orden: primero las posiciones más bajas del mástil
-  unique.sort((a, b) => {
-    const amin = Math.min(...a.frets.filter(f=>f>=0));
-    const bmin = Math.min(...b.frets.filter(f=>f>=0));
-    if (amin !== bmin) return amin - bmin;
-    return a.span - b.span;
+/* La primera cuerda grave puede estar silenciada: permite acordes abiertos como C, D, Am.
+   Se exploran ventanas de 4 trastes, con cuerdas al aire solo en zonas bajas. */
+Object.assign(PC, {"E#":5,"B#":0,"Cb":11,"Fb":4});
+function findShapes(rootPc, qualKey, tns){
+ const wanted=[...new Set(QUALITIES[qualKey].int.map(i=>mod12(rootPc+i)))];
+ const required=(1<<wanted.length)-1;
+ const strings=tns.map(pcOf);
+ const results=new Map();
+ for(let start=1;start<=13;start++){
+  const options=strings.map(p=>{
+   const arr=[-1];
+   if(start<=3&&wanted.includes(p))arr.push(0);
+   for(let f=start;f<=Math.min(start+3,16);f++)
+    if(wanted.includes(mod12(p+f)))arr.push(f);
+   return arr;
   });
-
-  return { shapes: unique, chordPcs, requiredPcs };
-}
-
-/* ============================================================
-   AGRUPAR EN POSICIONES ÚTILES
-   Quitamos duplicados que son la misma forma desplazada y
-   nos quedamos con las ventanas razonables.
-   ============================================================ */
-function pickBest(shapes, tns){
-  if (!shapes.length) return [];
-  const nStrings = tns.length;
-  const bassPc = null;
-
-  // Puntuación: premia cuerdas sonando, castiga trastes altos y aberturas
-  const scored = shapes.map(sh => {
-    const sounding = sh.frets.filter(f => f >= 0).length;
-    const played = sh.frets.filter(f => f > 0);
-    const minF = played.length ? Math.min(...played) : 0;
-    const maxF = played.length ? Math.max(...played) : 0;
-    // Cejilla (barre) = traste mínimo repetido en varias cuerdas
-    const lowest = played.length ? Math.min(...played) : 0;
-    const barre = played.filter(f => f === lowest).length;
-
-    let score = 0;
-    score += sounding * 14;              // cuantas más cuerdas, mejor
-    score -= maxF * 2.2;                 // trastes altos penalizan
-    score -= minF * 1.1;                 // posición baja es cómoda
-    score -= sh.span * 1.6;              // aberturas grandes penalizan
-    score += barre * 4;                  // cejilla clara es buena
-    if (sh.frets[0] === 0) score += 8;   // bordón al aire
-    if (sh.frets[nStrings-1] === 0) score += 5;
-    return { ...sh, score, sounding, minF, maxF };
-  });
-
-  scored.sort((a,b) => b.score - a.score);
-
-  // Deduplicar por forma normalizada (misma forma movida por el mástil)
-  const seen = new Set();
-  const uniq = [];
-  for (const sh of scored){
-    const norm = sh.frets.map(f => f < 0 ? "x" : (f - sh.minF)).join(",");
-    const zone = sh.minF < 3 ? "low" : (sh.minF < 7 ? "mid" : "high");
-    const key = norm + "|" + zone;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    uniq.push(sh);
-  }
-
-  uniq.sort((a,b) => a.minF - b.minF || b.sounding - a.sounding || a.span - b.span);
-
-  const limit = showAll ? 24 : 8;
-  return uniq.slice(0, limit);
-}
-
-/* ============================================================
-   DIBUJO: TABLATURA DE TEXTO
-   ============================================================ */
-function tabForShape(shape, tns){
-  const nStrings = tns.length;
-  let lines = [];
-  for (let s = 0; s < nStrings; s++){
-    const f = shape.frets[s];
-    const label = f < 0 ? "x" : (f === 0 ? "0" : String(f));
-    const cls = f < 0 ? "mute" : (f === 0 ? "open" : "");
-    lines.push({ label, cls, s });
-  }
-  return lines;
-}
-
-/* ============================================================
-   DIBUJO: DIAGRAMA SVG DEL MÁSTIL
-   ============================================================ */
-function svgDiagram(shape, tns){
-  const nStrings = tns.length;
-  const played = shape.frets.filter(f => f > 0);
-  let startFret = 1;
-  if (played.length){
-    const minF = Math.min(...played);
-    startFret = Math.max(1, minF);
-  }
-  const nFrets = 5;
-
-  const padL = 16, padR = 8, padT = 22, padB = 10;
-  const strGap = 14, fretGap = 20;
-  const w = padL + padR + (nStrings - 1) * strGap;
-  const h = padT + padB + nFrets * fretGap;
-
-  const strX  = i => padL + i * strGap;
-  const fretY = n => padT + n * fretGap;
-
-  let svg = `<svg class="diag" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
-
-  // cejuela (trazo claro) o número de traste (discreto)
-  if (startFret === 1){
-    svg += `<line x1="${padL}" y1="${padT}" x2="${strX(nStrings-1)}" y2="${padT}"
-      stroke="#7c8695" stroke-width="3" stroke-linecap="round"/>`;
-  } else {
-    svg += `<text x="${padL-7}" y="${padT+14}" fill="#8b93a1" font-size="10"
-      text-anchor="end" font-family="sans-serif" font-weight="600">${startFret}</text>`;
-  }
-
-  // trastes: líneas muy sutiles
-  for (let f = 1; f <= nFrets; f++){
-    svg += `<line x1="${padL}" y1="${fretY(f)}" x2="${strX(nStrings-1)}" y2="${fretY(f)}"
-      stroke="#252932" stroke-width="1"/>`;
-  }
-  // cuerdas: grosor decreciente
-  for (let i = 0; i < nStrings; i++){
-    const thick = 1 + (nStrings - 1 - i) * 0.26;
-    svg += `<line x1="${strX(i)}" y1="${padT}" x2="${strX(i)}" y2="${fretY(nFrets)}"
-      stroke="#4d5563" stroke-width="${thick.toFixed(1)}" stroke-linecap="round"/>`;
-  }
-
-  // marcadores de traste (solo un punto tenue)
-  for (const m of [3,5,7,9,12]){
-    const rel = m - startFret + 1;
-    if (rel >= 1 && rel <= nFrets){
-      svg += `<circle cx="${padL + (nStrings-1)*strGap/2}" cy="${fretY(rel) - fretGap/2}"
-        r="2" fill="#2b3038"/>`;
-    }
-  }
-
-  // notas
-  for (let i = 0; i < nStrings; i++){
-    const f = shape.frets[i];
-    const x = strX(i);
-    if (f < 0){
-      // cuerda muda: aspa fina
-      svg += `<path d="M${x-3.2} ${padT-13.2} L${x+3.2} ${padT-6.8}
-                       M${x+3.2} ${padT-13.2} L${x-3.2} ${padT-6.8}"
-        stroke="#5f6875" stroke-width="1.4" stroke-linecap="round"/>`;
-    } else if (f === 0){
-      // al aire: círculo hueco
-      svg += `<circle cx="${x}" cy="${padT-10}" r="3.4" fill="none"
-        stroke="#8b93a1" stroke-width="1.4"/>`;
-    } else {
-      const rel = f - startFret + 1;
-      if (rel >= 1 && rel <= nFrets){
-        const y = fretY(rel) - fretGap/2;
-        svg += `<circle cx="${x}" cy="${y}" r="6" fill="#f0b45c"/>`;
-        svg += `<text x="${x}" y="${y+3.6}" fill="#1a1206" font-size="9"
-          font-weight="700" text-anchor="middle" font-family="sans-serif">${f}</text>`;
-      }
-    }
-  }
-
-  svg += `</svg>`;
-  return svg;
-}
-
-/* ============================================================
-   RENDER
-   ============================================================ */
-function render(){
-  const inputEl  = document.getElementById("chordInput");
-  const capo     = parseInt(document.getElementById("capo").value, 10) || 0;
-  const info     = document.getElementById("parseInfo");
-
-  let parsed = parseChord(inputEl.value);
-
-  // Si el campo está vacío o no se entiende, caemos a los desplegables
-  if (!parsed){
-    const rn = document.getElementById("root").value;
-    const qk = document.getElementById("quality").value;
-    parsed = { root: rn, pc: pcOf(rn), quality: qk, bass: null };
-    if (inputEl.value.trim()){
-      info.innerHTML = '<span class="err">No entiendo ese acorde. Mostrando el de los desplegables.</span>';
-    } else {
-      info.innerHTML = '<span class="obj">Escribe un acorde, o usa los desplegables de abajo.</span>';
-    }
-  } else {
-    const qn = QUALITIES[parsed.quality] ? QUALITIES[parsed.quality].name : "";
-    info.innerHTML = `<span class="ok">${parsed.root}${SUFFIX[parsed.quality] || ""}</span>
-      <span class="obj"> · ${qn}${parsed.bass ? " · bajo " + parsed.bass : ""}</span>`;
-    // sincronizar los desplegables
-    document.getElementById("root").value = parsed.root;
-    document.getElementById("quality").value = parsed.quality;
-  }
-
-  const rootName = parsed.root;
-  const qualKey  = parsed.quality;
-  const rootPc   = parsed.pc;
-
-  const chordName = rootName + SUFFIX[qualKey];
-  const flat = preferFlatFor(rootName);
-
-  const notesTxt = QUALITIES[qualKey].int
-      .map(i => spell(mod12(rootPc + i), flat)).join(" · ");
-
-  const res = findShapes(rootPc, qualKey, tuning, capo);
-  const best = pickBest(res.shapes, tuning);
-
-  const count = document.getElementById("count");
-  const cont  = document.getElementById("shapes");
-
-  if (!best.length){
-    count.innerHTML = "";
-    cont.innerHTML = `<div class="empty">Sin posiciones para <b>${chordName}</b>
-      en esta afinación.<br>Prueba otra afinación.</div>`;
+  const chosen=new Array(6).fill(-1);
+  function walk(i,mask,count,started,ended){
+   if(i===6){
+    if(mask!==required||count<Math.max(3,wanted.length))return;
+    const pressed=chosen.filter(f=>f>0);
+    const min=pressed.length?Math.min(...pressed):0;
+    const max=pressed.length?Math.max(...pressed):0;
+    if(max-min>3)return;
+    const first=chosen.findIndex(f=>f>=0);
+    if(first<0)return;
+    const bass=mod12(strings[first]+chosen[first]);
+    const open=chosen.filter(f=>f===0).length;
+    const rootBass=bass===rootPc;
+    const score=(rootBass?28:0)+count*4+open*2.5-(max-min)*2.2-max*.3;
+    const signature=chosen.join(",");
+    if(!results.has(signature))results.set(signature,{frets:chosen.slice(),minF:min,maxF:max,score,rootBass});
     return;
+   }
+   for(const fret of options[i]){
+    if(fret>=0&&ended)continue;
+    chosen[i]=fret;
+    if(fret<0)walk(i+1,mask,count,started,started||ended);
+    else walk(i+1,mask|(1<<wanted.indexOf(mod12(strings[i]+fret))),count+1,true,false);
+   }
   }
-
-  count.innerHTML = `<b>${chordName}</b> · ${notesTxt}<br>
-     ${best.length} posici${best.length>1?"ones":"ón"}${capo?` · capo ${capo}`:""}`;
-
-  cont.innerHTML = best.map((sh, idx) => {
-    const tabRows = tabForShape(sh, tuning).map(t => {
-      const strings = tuning.map((n, i) => {
-        const cell = sh.frets[i] < 0 ? "x" : (sh.frets[i]===0 ? "0" : sh.frets[i]);
-        const width = 3;
-        return String(cell).padEnd(width, "-");
-      }).join("");
-      return strings;
-    });
-
-    // Texto de tablatura con nombres de cuerda
-    const tabText = tuning.map((n, i) => {
-      const f = sh.frets[i];
-      const cell = f < 0 ? "x" : (f === 0 ? "0" : String(f));
-      const str = tuning[i];
-      const line = `${str.padStart(2)} |--${cell}--|`;
-      return `<tr><td class="sname">${n}</td><td class="nut">|</td><td class="fretxt ${f<0?'mute':(f===0?'open':'')}">${cell}</td><td class="nut">|</td></tr>`;
-    }).join("");
-
-    const fretLabel = (() => {
-      const pf = sh.frets.filter(f => f > 0);
-      if (!pf.length) return "al aire";
-      const mn = Math.min(...pf), mx = Math.max(...pf);
-      return mn === mx ? `traste ${mn}` : `trastes ${mn}–${mx}`;
-    })();
-
-    return `
-      <div class="shape">
-        <div class="head">
-          <span class="cname">${chordName}</span>
-          <span class="pos">${fretLabel}</span>
-        </div>
-        <div class="diagwrap">${svgDiagram(sh, tuning)}</div>
-        <table class="tab">${tabText}</table>
-      </div>`;
-  }).join("");
+  walk(0,0,0,false,false);
+ }
+ return {shapes:[...results.values()], chordPcs:wanted, requiredPcs:wanted};
 }
-
-/* ============================================================
-   INTERFAZ
-   ============================================================ */
-function fillPresets(){
-  const sel = document.getElementById("preset");
-  sel.innerHTML = "";
-  for (const k in TUNINGS){
-    const o = document.createElement("option");
-    o.value = k; o.textContent = TUNINGS[k].name;
-    sel.appendChild(o);
+function pickBest(shapes){
+ const sorted=shapes.slice().sort((a,b)=>b.score-a.score);
+ const chosen=[];
+ for(const [lo,hi] of [[0,3],[4,6],[7,9],[10,16]]){
+  const v=sorted.find(s=>s.minF>=lo&&s.minF<=hi&&chosen.every(p=>Math.abs(s.minF-p.minF)>1));
+  if(v)chosen.push(v);
+ }
+ for(const v of sorted){
+  if(chosen.length>=4)break;
+  if(chosen.every(p=>Math.abs(v.minF-p.minF)>1))chosen.push(v);
+ }
+ for(const v of sorted){
+  if(chosen.length>=4)break;
+  if(!chosen.includes(v))chosen.push(v);
+ }
+ return chosen.sort((a,b)=>a.minF-b.minF).slice(0,4);
+}
+function svgDiagram(shape,tns){
+ const played=shape.frets.filter(f=>f>0);
+ const minF=played.length?Math.min(...played):1;
+ const startFret=minF<=4?1:minF;
+ const nStrings=tns.length,padL=20,padT=27,stepX=19,stepY=24,count=5;
+ const sx=i=>padL+i*stepX, fy=i=>padT+i*stepY;
+ const w=padL*2+(nStrings-1)*stepX,h=padT+count*stepY+9;
+ let svg='<svg class="diag" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Posición '+shape.frets.map(f=>f<0?"x":f).join(", ")+'">';
+ for(let i=1;i<=count;i++)svg+='<line x1="'+padL+'" y1="'+fy(i)+'" x2="'+sx(nStrings-1)+'" y2="'+fy(i)+'" stroke="#5d696b" stroke-width="1"/>';
+ for(let i=0;i<nStrings;i++)svg+='<line x1="'+sx(i)+'" y1="'+padT+'" x2="'+sx(i)+'" y2="'+fy(count)+'" stroke="#708080" stroke-width="'+(2-i*.2)+'"/>';
+ if(startFret===1)svg+='<line x1="'+padL+'" y1="'+padT+'" x2="'+sx(nStrings-1)+'" y2="'+padT+'" stroke="#e0e5e0" stroke-width="3.6"/>';
+ else svg+='<text x="13" y="'+(padT+17)+'" fill="#aeb9b5" font-size="11" text-anchor="middle">'+startFret+'</text>';
+ for(let i=0;i<nStrings;i++){
+  const f=shape.frets[i],x=sx(i);
+  svg+='<text x="'+x+'" y="12" fill="#b5c0bb" font-size="10" font-weight="650" text-anchor="middle">'+tns[i]+'</text>';
+  if(f<0)svg+='<text x="'+x+'" y="'+(padT-8)+'" text-anchor="middle" fill="#b5c0bb" font-size="13">×</text>';
+  else if(f===0)svg+='<circle cx="'+x+'" cy="'+(padT-9)+'" r="4" fill="none" stroke="#b5c0bb" stroke-width="1.6"/>';
+  else{
+   const y=fy(f-startFret+1)-stepY/2;
+   if(y>=padT&&y<=fy(count)){
+    svg+='<circle cx="'+x+'" cy="'+y+'" r="8" fill="#dfba7b"/>';
+    svg+='<text x="'+x+'" y="'+(y+3.6)+'" font-size="10" text-anchor="middle" fill="#252018" font-weight="700">'+f+'</text>';
+   }
   }
-  o_extra: {
-    const o = document.createElement("option");
-    o.value = "__custom"; o.textContent = "— personalizada —";
-    sel.appendChild(o);
-  }
-  sel.value = "standard";
+ }
+ return svg+'</svg>';
 }
-
-function fillRoots(){
-  const sel = document.getElementById("root");
-  sel.innerHTML = "";
-  const order = ["C","C#","Db","D","D#","Eb","E","F","F#","Gb","G","G#","Ab","A","A#","Bb","B"];
-  for (const n of order){
-    const o = document.createElement("option");
-    o.value = n; o.textContent = n;
-    sel.appendChild(o);
-  }
-  sel.value = "C";
+/* Tonalidades en orden de quintas. Parejas de relativo mayor / menor. */
+const CIRCLE=[
+ ["C","Am"],["G","Em"],["D","Bm"],["A","F#m"],["E","C#m"],["B","G#m"],
+ ["F#","D#m"],["Db","Bbm"],["Ab","Fm"],["Eb","Cm"],["Bb","Gm"],["F","Dm"]
+];
+const NATURAL={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const LETTERS=["C","D","E","F","G","A","B"];
+const MAJOR=[0,2,4,5,7,9,11],MINOR=[0,2,3,5,7,8,10];
+const TRI_MAJ=["maj","min","min","maj","maj","min","dim"];
+const TRI_MIN=["min","dim","maj","min","min","maj","maj"];
+const SEV_MAJ=["maj7","m7","m7","maj7","7","m7","m7b5"];
+const SEV_MIN=["m7","m7b5","maj7","m7","m7","maj7","7"];
+const ROM_MAJ=["I","ii","iii","IV","V","vi","vii°"];
+const ROM_MIN=["i","ii°","III","iv","v","VI","VII"];
+let currentKey="C",currentMode="maj",degree=0,useSevenths=false,custom=false;
+function noteSpell(rootName,mode){
+ const start=LETTERS.indexOf(rootName.charAt(0));
+ const intervals=mode==="maj"?MAJOR:MINOR;
+ return intervals.map((d,i)=>{
+  const letter=LETTERS[(start+i)%7];
+  const diff=mod12(PC[rootName]+d-NATURAL[letter]);
+  return letter+(diff===0?"":diff===1?"#":diff===11?"b":diff===2?"##":"");
+ });
 }
-
-function fillQualities(){
-  const sel = document.getElementById("quality");
-  sel.innerHTML = "";
-  for (const k in QUALITIES){
-    const o = document.createElement("option");
-    o.value = k; o.textContent = QUALITIES[k].name;
-    sel.appendChild(o);
-  }
-  sel.value = "maj";
+function currentDegrees(){
+ const root=currentMode==="min"?currentKey.slice(0,-1):currentKey;
+ const names=noteSpell(root,currentMode);
+ const qualities=useSevenths?(currentMode==="maj"?SEV_MAJ:SEV_MIN):(currentMode==="maj"?TRI_MAJ:TRI_MIN);
+ const romans=currentMode==="maj"?ROM_MAJ:ROM_MIN;
+ return names.map((name,i)=>({root:name,qual:qualities[i],roman:romans[i],name:name+SUFFIX[qualities[i]]}));
 }
-
-function fillCapo(){
-  const sel = document.getElementById("capo");
-  sel.innerHTML = "";
-  for (let i = 0; i <= 12; i++){
-    const o = document.createElement("option");
-    o.value = i; o.textContent = i === 0 ? "sin capo" : "capo " + i;
-    sel.appendChild(o);
-  }
-  sel.value = "0";
+function currentChord(){
+ if(custom){
+  const name=document.getElementById("root").value,qual=document.getElementById("quality").value;
+  return {root:name,qual,name:name+SUFFIX[qual]};
+ }
+ return currentDegrees()[degree];
 }
-
-function buildTuner(){
-  const wrap = document.getElementById("tuner");
-  wrap.innerHTML = "";
-  const nStrings = tuning.length;
-  // Mostrar de la 1ª aguda (derecha) a la 6ª grave (izquierda)
-  for (let i = nStrings - 1; i >= 0; i--){
-    const col = document.createElement("div");
-    col.className = "strcol";
-    const nm = document.createElement("div");
-    nm.className = "nm";
-    nm.textContent = "c" + (i+1);
-    col.appendChild(nm);
-    const s = document.createElement("select");
-    const order = ["C","C#","Db","D","D#","Eb","E","F","F#","Gb","G","G#","Ab","A","A#","Bb","B"];
-    for (const n of order){
-      const o = document.createElement("option");
-      o.value = n; o.textContent = n;
-      s.appendChild(o);
-    }
-    s.value = tuning[i];
-    s.addEventListener("change", () => {
-      tuning[i] = s.value;
-      document.getElementById("preset").value = "__custom";
-      updateTuningInfo();
-    });
-    col.appendChild(s);
-    wrap.appendChild(col);
-  }
-  updateTuningInfo();
+function xy(r,a){
+ const t=a*Math.PI/180;return [180+r*Math.cos(t),180+r*Math.sin(t)];
 }
-
-function updateTuningInfo(){
-  const names = tuning.map((n,i) => `${i+1}:${n}`).join("  ");
-  const from = tuning[0], to = tuning[tuning.length-1];
-  document.getElementById("tuningInfo").textContent =
-    `${tuning.length} cuerdas · ${names}`;
+function sector(r1,r2,a1,a2){
+ const a=xy(r2,a1),b=xy(r2,a2),c=xy(r1,a2),d=xy(r1,a1);
+ return "M"+a.join(" ")+" A"+r2+" "+r2+" 0 0 1 "+b.join(" ")+" L"+c.join(" ")+" A"+r1+" "+r1+" 0 0 0 "+d.join(" ")+" Z";
 }
-
-function loadPreset(key){
-  if (key === "__custom") return;
-  const t = TUNINGS[key];
-  tuning = t.notes.slice();
-  buildTuner();
-}
-
-/* Fijar longitud de cuerdas al cargar preset: si cambia el nº, reconstruir */
-function syncTunerLength(){
-  const n = tuning.length;
-  buildTuner();
-}
-
-/* ============================================================
-   EVENTOS
-   ============================================================ */
-document.getElementById("preset").addEventListener("change", e => {
-  const k = e.target.value;
-  if (k === "__custom") return;
-  tuning = TUNINGS[k].notes.slice();
-  buildTuner();
-  render();
-});
-
-const chordInput = document.getElementById("chordInput");
-chordInput.addEventListener("input", render);
-chordInput.addEventListener("keydown", e => {
-  if (e.key === "Enter"){ e.preventDefault(); render(); chordInput.blur(); }
-});
-
-document.getElementById("root").addEventListener("change", () => {
-  chordInput.value = document.getElementById("root").value + SUFFIX[document.getElementById("quality").value];
-  render();
-});
-document.getElementById("quality").addEventListener("change", () => {
-  chordInput.value = document.getElementById("root").value + SUFFIX[document.getElementById("quality").value];
-  render();
-});
-document.getElementById("capo").addEventListener("change", render);
-
-document.getElementById("btnBasic").addEventListener("click", () => {
-  showAll = false;
-  document.getElementById("btnBasic").classList.add("on");
-  document.getElementById("btnAll").classList.remove("on");
-  render();
-});
-document.getElementById("btnAll").addEventListener("click", () => {
-  showAll = true;
-  document.getElementById("btnAll").classList.add("on");
-  document.getElementById("btnBasic").classList.remove("on");
-  render();
-});
-
-/* Acordes rápidos */
-function buildQuick(){
-  const wrap = document.getElementById("quick");
-  const quick = [
-    ["C","maj"],["G","maj"],["D","maj"],["A","maj"],["E","maj"],["F","maj"],
-    ["Am","min"],["Em","min"],["Dm","min"],["Bm","min"],["C7","7"],["G7","7"],
-    ["Cmaj7","maj7"],["Am7","m7"],["F#m","min"],["Bm7","m7"]
-  ];
-  wrap.innerHTML = "";
-  for (const [label, q] of quick){
-    const root = label.replace(/(maj7|m7|7|m|5|9)$/, "") || label;
-    const b = document.createElement("button");
-    b.className = "chip";
-    b.textContent = label;
-    b.addEventListener("click", () => {
-      document.getElementById("root").value = root;
-      document.getElementById("quality").value = q;
-      render();
-      window.scrollTo({ top: document.getElementById("count").offsetTop - 80, behavior:"smooth" });
-    });
-    wrap.appendChild(b);
-  }
-}
-
-/* ============================================================
-   ARRANQUE
-   ============================================================ */
-fillPresets();
-fillRoots();
-fillQualities();
-fillCapo();
-buildTuner();
-buildQuick();
-render();
-
-/* Service worker (offline) */
-if ("serviceWorker" in navigator){
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("service-worker.js").catch(()=>{});
+function drawCircle(){
+ let html='<svg viewBox="0 0 360 360" role="group" aria-label="Círculo de quintas">';
+ CIRCLE.forEach((pair,i)=>{
+  ["maj","min"].forEach(mode=>{
+   const key=pair[mode==="maj"?0:1];
+   const selected=currentKey===key&&currentMode===mode;
+   const angle=-90+i*30,r1=mode==="maj"?118:69,r2=mode==="maj"?169:116;
+   const c=xy((r1+r2)/2,angle),fill=selected?"#dfba7b":mode==="maj"?"#30383a":"#262d30";
+   const color=selected?"#252018":mode==="maj"?"#f1f0e9":"#c6cfca";
+   html+='<g class="wheel-sector" data-key="'+key+'" data-mode="'+mode+'" role="button" tabindex="0" aria-label="'+key+' '+(mode==="maj"?"mayor":"menor")+'" aria-pressed="'+selected+'">';
+   html+='<path d="'+sector(r1,r2,angle-14.6,angle+14.6)+'" fill="'+fill+'"/>';
+   html+='<text x="'+c[0].toFixed(2)+'" y="'+c[1].toFixed(2)+'" fill="'+color+'" font-size="'+(mode==="maj"?17:13)+'" font-weight="650" text-anchor="middle" dominant-baseline="central">'+key+'</text></g>';
   });
+ });
+ html+='<circle cx="180" cy="180" r="66" fill="#192024" stroke="#455053"/>';
+ html+='<text x="180" y="174" fill="#dfba7b" font-size="27" font-weight="700" text-anchor="middle">'+currentKey+'</text>';
+ html+='<text x="180" y="198" fill="#adb6b3" font-size="11" letter-spacing="2" text-anchor="middle">'+(currentMode==="maj"?"MAYOR":"MENOR")+'</text></svg>';
+ document.getElementById("circle").innerHTML=html;
 }
+function drawChords(){
+ document.getElementById("keyName").textContent=currentKey+(currentMode==="maj"?" mayor":" menor");
+ document.getElementById("keyHint").textContent="Acordes diatónicos · "+(currentMode==="maj"?"escala mayor":"menor natural");
+ document.getElementById("triads").classList.toggle("on",!useSevenths);
+ document.getElementById("sevenths").classList.toggle("on",useSevenths);
+ document.getElementById("triads").setAttribute("aria-pressed",String(!useSevenths));
+ document.getElementById("sevenths").setAttribute("aria-pressed",String(useSevenths));
+ document.getElementById("degreeChords").innerHTML=currentDegrees().map((c,i)=>'<button type="button" class="degree'+(!custom&&i===degree?" on":"")+'" data-degree="'+i+'" aria-pressed="'+(!custom&&i===degree)+'"><span class="roman">'+c.roman+'</span><strong>'+c.name+'</strong></button>').join("");
+ document.getElementById("extraBox").hidden=!custom;
+ document.getElementById("extraToggle").setAttribute("aria-expanded",String(custom));
+ document.getElementById("extraToggle").textContent=custom?"Volver a los acordes de la tonalidad":"Elegir otro acorde";
+}
+function drawResults(){
+ const c=currentChord();
+ const rootPc=pcOf(c.root);
+ const notes=QUALITIES[c.qual].int.map(i=>spell(mod12(rootPc+i),c.root.includes("b"))).join(" · ");
+ document.getElementById("chosenChord").textContent=c.name;
+ document.getElementById("notesLine").textContent=notes;
+ const found=findShapes(rootPc,c.qual,tuning);
+ const best=pickBest(found.shapes);
+ const count=document.getElementById("count");
+ const cont=document.getElementById("shapes");
+ count.textContent=best.length+" posici"+(best.length===1?"ón":"ones");
+ if(!best.length){
+  cont.innerHTML='<div id="empty">No se encontraron posiciones completas y cómodas para este acorde en esta afinación.</div>';
+  return;
+ }
+ cont.innerHTML=best.map((s,i)=>{
+  const positive=s.frets.filter(f=>f>0);
+  const label=positive.length?"trastes "+Math.min(...positive)+"–"+Math.max(...positive):"al aire";
+  const tab=s.frets.map(f=>f<0?"×":f).join(" · ");
+  return '<article class="shape"><div class="head"><span class="cname">'+(i+1)+'. '+c.name+'</span><span class="pos">'+label+'</span></div><div class="diagwrap">'+svgDiagram(s,tuning)+'</div><div class="meta" style="margin-top:5px">'+tab+'</div></article>';
+ }).join("");
+}
+function render(){drawCircle();drawChords();drawResults();}
+function chooseWheel(el){
+ currentKey=el.dataset.key;currentMode=el.dataset.mode;degree=0;custom=false;render();
+}
+function boot(){
+ const preset=document.getElementById("preset");
+ for(const [key,value] of Object.entries(TUNINGS)){
+  const o=document.createElement("option");o.value=key;o.textContent=value.name;preset.appendChild(o);
+ }
+ const root=document.getElementById("root"),qual=document.getElementById("quality");
+ for(const n of ["C","C#","Db","D","D#","Eb","E","F","F#","Gb","G","G#","Ab","A","A#","Bb","B"]){
+  const o=document.createElement("option");o.value=n;o.textContent=n;root.appendChild(o);
+ }
+ for(const k of ["maj","min","7","maj7","m7","dim","sus2","sus4","m7b5"]){
+  const o=document.createElement("option");o.value=k;o.textContent=QUALITIES[k].name;qual.appendChild(o);
+ }
+ root.value="C";qual.value="maj";
+ function showStrings(){document.getElementById("strings").innerHTML=tuning.map(n=>'<span class="stringnote">'+n+'</span>').join("");}
+ preset.addEventListener("change",()=>{tuning=TUNINGS[preset.value].notes.slice();showStrings();drawResults();});
+ document.getElementById("circle").addEventListener("click",e=>{
+  const el=e.target.closest(".wheel-sector");if(el)chooseWheel(el);
+ });
+ document.getElementById("circle").addEventListener("keydown",e=>{
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  const el=e.target.closest(".wheel-sector");
+  if(el){e.preventDefault();chooseWheel(el);}
+ });
+ document.getElementById("degreeChords").addEventListener("click",e=>{
+  const el=e.target.closest("[data-degree]");if(!el)return;
+  degree=Number(el.dataset.degree);custom=false;drawChords();drawResults();
+ });
+ document.getElementById("triads").addEventListener("click",()=>{useSevenths=false;drawChords();drawResults();});
+ document.getElementById("sevenths").addEventListener("click",()=>{useSevenths=true;drawChords();drawResults();});
+ document.getElementById("extraToggle").addEventListener("click",()=>{custom=!custom;drawChords();drawResults();});
+ root.addEventListener("change",()=>{custom=true;drawChords();drawResults();});
+ qual.addEventListener("change",()=>{custom=true;drawChords();drawResults();});
+ showStrings();render();
+}
+boot();
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
+
 </script>
 </body>
 </html>
