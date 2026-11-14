@@ -231,6 +231,7 @@ footer{text-align:center;font-size:.74rem;color:var(--dim2);margin:28px 0 0}
 <footer>Posiciones calculadas según la afinación seleccionada</footer>
 <script>
 
+
 "use strict";
 
 /* ============================================================
@@ -414,64 +415,118 @@ function preferFlatFor(rootName){
 /* La primera cuerda grave puede estar silenciada: permite acordes abiertos como C, D, Am.
    Se exploran ventanas de 4 trastes, con cuerdas al aire solo en zonas bajas. */
 Object.assign(PC, {"E#":5,"B#":0,"Cb":11,"Fb":4});
-function findShapes(rootPc, qualKey, tns){
- const wanted=[...new Set(QUALITIES[qualKey].int.map(i=>mod12(rootPc+i)))];
- const required=(1<<wanted.length)-1;
- const strings=tns.map(pcOf);
- const results=new Map();
- for(let start=1;start<=13;start++){
-  const options=strings.map(p=>{
-   const arr=[-1];
-   if(start<=3&&wanted.includes(p))arr.push(0);
-   for(let f=start;f<=Math.min(start+3,16);f++)
-    if(wanted.includes(mod12(p+f)))arr.push(f);
-   return arr;
-  });
-  const chosen=new Array(6).fill(-1);
-  function walk(i,mask,count,started,ended){
-   if(i===6){
-    if(mask!==required||count<Math.max(3,wanted.length))return;
-    const pressed=chosen.filter(f=>f>0);
-    const min=pressed.length?Math.min(...pressed):0;
-    const max=pressed.length?Math.max(...pressed):0;
-    if(max-min>3)return;
-    const first=chosen.findIndex(f=>f>=0);
-    if(first<0)return;
-    const bass=mod12(strings[first]+chosen[first]);
-    const open=chosen.filter(f=>f===0).length;
-    const rootBass=bass===rootPc;
-    const score=(rootBass?28:0)+count*4+open*2.5-(max-min)*2.2-max*.3;
-    const signature=chosen.join(",");
-    if(!results.has(signature))results.set(signature,{frets:chosen.slice(),minF:min,maxF:max,score,rootBass});
-    return;
-   }
-   for(const fret of options[i]){
-    if(fret>=0&&ended)continue;
-    chosen[i]=fret;
-    if(fret<0)walk(i+1,mask,count,started,started||ended);
-    else walk(i+1,mask|(1<<wanted.indexOf(mod12(strings[i]+fret))),count+1,true,false);
-   }
+
+/* Ergonomía aproximada: una cejilla solo es viable si no cruza
+   cuerdas al aire o notas más graves que el traste de la cejilla. */
+function describeGrip(frets){
+  const pressing=frets.map((f,i)=>({f,i})).filter(n=>n.f>0);
+  const values=[...new Set(pressing.map(n=>n.f))];
+  let fingers=pressing.length;
+  const barres=[];
+  for(const f of values){
+    const indexes=pressing.filter(n=>n.f===f).map(n=>n.i);
+    let group=[indexes[0]];
+    function closeGroup(){
+      if(group.length>1){
+        fingers-=group.length-1;
+        barres.push({fret:f,first:group[0],last:group[group.length-1]});
+      }
+    }
+    for(let i=1;i<indexes.length;i++){
+      let valid=true;
+      for(let c=indexes[i-1]+1;c<indexes[i];c++){
+        if(frets[c]<f){valid=false;break;}
+      }
+      if(valid)group.push(indexes[i]);
+      else{closeGroup();group=[indexes[i]];}
+    }
+    closeGroup();
   }
-  walk(0,0,0,false,false);
- }
- return {shapes:[...results.values()], chordPcs:wanted, requiredPcs:wanted};
+  let changes=0;
+  for(let i=1;i<frets.length;i++){
+    if(frets[i]>0&&frets[i-1]>0&&Math.abs(frets[i]-frets[i-1])>=3)changes++;
+  }
+  return {fingers,barres,changes};
 }
+
+/* Buscar formas físicamente plausibles en ventanas de cuatro trastes.
+   Las cuerdas graves pueden silenciarse; esto recupera C, Am, D, etc.
+   Se comprueban TODAS las notas: sin tensiones ajenas al acorde. */
+function findShapes(rootPc,qualKey,tns){
+  const wanted=[...new Set(QUALITIES[qualKey].int.map(i=>mod12(rootPc+i)))];
+  const required=(1<<wanted.length)-1;
+  const strings=tns.map(pcOf);
+  const results=new Map();
+  for(let start=1;start<=13;start++){
+    const options=strings.map(p=>{
+      const arr=[-1];
+      if(start<=3&&wanted.includes(p))arr.push(0);
+      for(let f=start;f<=Math.min(start+3,16);f++){
+        if(wanted.includes(mod12(p+f)))arr.push(f);
+      }
+      return arr;
+    });
+    const chosen=new Array(6).fill(-1);
+    function walk(i,mask,count,started,ended){
+      if(i===6){
+        if(mask!==required||count<Math.max(3,wanted.length))return;
+        const pressed=chosen.filter(f=>f>0);
+        const min=pressed.length?Math.min(...pressed):0;
+        const max=pressed.length?Math.max(...pressed):0;
+        if(max-min>3)return;
+        const grip=describeGrip(chosen);
+        if(grip.fingers>4)return;
+        const first=chosen.findIndex(f=>f>=0);
+        if(first<0)return;
+        const bass=mod12(strings[first]+chosen[first]);
+        const open=chosen.filter(f=>f===0).length;
+        const rootBass=bass===rootPc;
+        const score=(rootBass?22:0)+count*3.5+open*1.8
+          -grip.fingers*3-(max-min)*2-max*.3
+          -grip.changes*.75-grip.barres.length*.75;
+        const signature=chosen.join(",");
+        if(!results.has(signature)){
+          results.set(signature,{
+            frets:chosen.slice(),minF:min,maxF:max,score,
+            rootBass,bassPc:bass,fingers:grip.fingers,barres:grip.barres
+          });
+        }
+        return;
+      }
+      for(const fret of options[i]){
+        if(fret>=0&&ended)continue;
+        chosen[i]=fret;
+        if(fret<0)walk(i+1,mask,count,started,started||ended);
+        else walk(i+1,mask|(1<<wanted.indexOf(mod12(strings[i]+fret))),count+1,true,false);
+      }
+    }
+    walk(0,0,0,false,false);
+  }
+  return {shapes:[...results.values()],chordPcs:wanted,requiredPcs:wanted};
+}
+
+/* Una forma cómoda por zona: abierta/baja, trastes 3–5, 6–9 y 10–16.
+   La calidad de la digitación gana a rellenar posiciones arbitrarias. */
 function pickBest(shapes){
- const sorted=shapes.slice().sort((a,b)=>b.score-a.score);
- const chosen=[];
- for(const [lo,hi] of [[0,3],[4,6],[7,9],[10,16]]){
-  const v=sorted.find(s=>s.minF>=lo&&s.minF<=hi&&chosen.every(p=>Math.abs(s.minF-p.minF)>1));
-  if(v)chosen.push(v);
- }
- for(const v of sorted){
-  if(chosen.length>=4)break;
-  if(chosen.every(p=>Math.abs(v.minF-p.minF)>1))chosen.push(v);
- }
- for(const v of sorted){
-  if(chosen.length>=4)break;
-  if(!chosen.includes(v))chosen.push(v);
- }
- return chosen.sort((a,b)=>a.minF-b.minF).slice(0,4);
+  if(!shapes.length)return [];
+  const sorted=shapes.slice().sort((a,b)=>b.score-a.score);
+  const chosen=[];
+  for(const [lo,hi] of [[0,2],[3,5],[6,9],[10,16]]){
+    const candidate=sorted.find(s=>
+      s.minF>=lo&&s.minF<=hi&&
+      chosen.every(p=>Math.abs(s.minF-p.minF)>=2)
+    );
+    if(candidate)chosen.push(candidate);
+  }
+  for(const shape of sorted){
+    if(chosen.length>=4)break;
+    if(chosen.every(p=>Math.abs(shape.minF-p.minF)>=2))chosen.push(shape);
+  }
+  for(const shape of sorted){
+    if(chosen.length>=4)break;
+    if(!chosen.includes(shape))chosen.push(shape);
+  }
+  return chosen.sort((a,b)=>a.minF-b.minF).slice(0,4);
 }
 function svgDiagram(shape,tns){
  const played=shape.frets.filter(f=>f>0);
@@ -593,9 +648,12 @@ function drawResults(){
  }
  cont.innerHTML=best.map((s,i)=>{
   const positive=s.frets.filter(f=>f>0);
-  const label=positive.length?"trastes "+Math.min(...positive)+"–"+Math.max(...positive):"al aire";
+  const lo=positive.length?Math.min(...positive):0;
+  const hi=positive.length?Math.max(...positive):0;
+  const label=!positive.length?"al aire":lo===hi?"traste "+lo:"trastes "+lo+"–"+hi;
+  const bassName=s.rootBass?c.name:c.name+"/"+spell(s.bassPc,c.root.includes("b"));
   const tab=s.frets.map(f=>f<0?"×":f).join(" · ");
-  return '<article class="shape"><div class="head"><span class="cname">'+(i+1)+'. '+c.name+'</span><span class="pos">'+label+'</span></div><div class="diagwrap">'+svgDiagram(s,tuning)+'</div><div class="meta" style="margin-top:5px">'+tab+'</div></article>';
+  return '<article class="shape"><div class="head"><span class="cname">'+(i+1)+'. '+bassName+'</span><span class="pos">'+label+'</span></div><div class="diagwrap">'+svgDiagram(s,tuning)+'</div><div class="meta" style="margin-top:5px">'+tab+'</div></article>';
  }).join("");
 }
 function render(){drawCircle();drawChords();drawResults();}
@@ -638,6 +696,7 @@ function boot(){
 }
 boot();
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
+
 
 </script>
 </body>
