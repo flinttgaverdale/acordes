@@ -1,7 +1,7 @@
 {
-  "name": "Acordes · Círculo de quintas",
+  "name": "Acordes · Guitarra y Piano",
   "short_name": "Acordes",
-  "description": "Círculo de quintas y cuatro diagramas de guitarra para afinaciones Standard, Open D, DADGAD y CGDGGD.",
+  "description": "Círculo de quintas, guitarra con cuatro afinaciones y piano con inversiones, acordes extendidos y voicings de jazz.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
