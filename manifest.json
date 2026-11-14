@@ -1,13 +1,13 @@
 {
-  "name": "Acordes · Afinaciones",
+  "name": "Acordes · Círculo de quintas",
   "short_name": "Acordes",
-  "description": "Consulta de acordes de guitarra en cualquier afinación: tablatura y diagramas con todas las posiciones.",
+  "description": "Círculo de quintas y cuatro diagramas de guitarra para afinaciones Standard, Open D, DADGAD y CGDGGD.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#15161a",
-  "theme_color": "#15161a",
+  "background_color": "#121619",
+  "theme_color": "#121619",
   "lang": "es",
   "icons": [
     {
