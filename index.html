@@ -218,7 +218,7 @@ footer{text-align:center;font-size:.74rem;color:var(--dim2);margin:28px 0 0}
 .piano-svg{display:block;width:100%;height:auto;max-height:145px;object-fit:contain}
 .piano-hand{font-size:.82rem;color:var(--txt);line-height:1.5;margin-top:6px;overflow-wrap:anywhere}
 .piano-hand b{display:inline-block;color:#79aac5;font-size:.77rem;margin-right:6px;min-width:56px}
-.piano-hand:nth-of-type(3) b{color:var(--accent)}
+.piano-hand + .piano-hand b{color:var(--accent)}
 .piano-omitted{color:var(--dim);font-size:.72rem;line-height:1.4;margin-top:7px}
 .legend-left{color:#79aac5!important}
 @media(max-width:700px){.is-piano .shapes{grid-template-columns:1fr}}
