@@ -5,13 +5,13 @@ let instrument="guitar";
 let savedPianoSelection=null;
 const GUITAR_QUALITIES=["maj","min","7","maj7","m7","dim","sus2","sus4","m7b5"];
 const PIANO_EXTRA_GROUPS=[
- {label:"Extensiones",options:[["add9","add9"],["9","9"],["maj9","maj9"],["m9","m9"],["11","11"],["m11","m11"],["13","13"],["maj13","maj13"],["m13","m13"]]},
+ {label:"Extensiones",options:[["add9","add9"],["9","9"],["maj9","maj9"],["m9","m9"],["11","11"],["maj11","maj11"],["m11","m11"],["13","13"],["maj13","maj13"],["m13","m13"]]},
  {label:"Jazz y alterados",options:[["6/9","6/9"],["m6/9","m6/9"],["9sus4","9sus4"],["7b9","7♭9"],["7#9","7♯9"],["7#11","7♯11"],["maj7#11","maj7♯11"],["7b13","7♭13"],["7b5","7♭5"],["7#5","7♯5"],["mM7","m(maj7)"],["dim7","dim7"]]}
 ];
 const PIANO_DEFINITIONS={
  "add9":[0,4,7,14],
  "9":[0,4,7,10,14], "maj9":[0,4,7,11,14],"m9":[0,3,7,10,14],
- "11":[0,4,7,10,14,17],"m11":[0,3,7,10,14,17],
+ "11":[0,4,7,10,14,17],"maj11":[0,4,7,11,14,17],"m11":[0,3,7,10,14,17],
  "13":[0,4,7,10,14,17,21],"maj13":[0,4,7,11,14,17,21],"m13":[0,3,7,10,14,17,21],
  "6/9":[0,4,7,9,14],"m6/9":[0,3,7,9,14],
  "9sus4":[0,5,7,10,14],
@@ -21,7 +21,7 @@ const PIANO_DEFINITIONS={
 };
 const PIANO_CORE={
  "add9":[4,7,14], "9":[4,10,14],"maj9":[4,11,14],"m9":[3,10,14],
- "11":[10,14,17],"m11":[3,10,14,17],
+ "11":[10,14,17],"maj11":[11,14,17],"m11":[3,10,14,17],
  "13":[4,10,14,21],"maj13":[4,11,14,21],"m13":[3,10,14,21],
  "6/9":[4,9,14],"m6/9":[3,9,14],"9sus4":[5,10,14],
  "7b9":[4,10,13],"7#9":[4,10,15],"7#11":[4,10,18],
@@ -40,7 +40,8 @@ function pianoIntervals(qual){
     return v;
   });
 }
-function pianoDegree(interval){
+function pianoDegree(interval,qual){
+  if(qual==="dim7"&&interval===9)return 6;
   if(interval===0)return 0;
   if([1,2,13,14,15].includes(interval))return 1;
   if([3,4].includes(interval))return 2;
@@ -50,9 +51,9 @@ function pianoDegree(interval){
   if([10,11].includes(interval))return 6;
   return 0;
 }
-function pianoNoteSpelling(root,interval){
+function pianoNoteSpelling(root,interval,qual){
   const rootLetter=LETTERS.indexOf(root[0]);
-  const letter=LETTERS[(rootLetter+pianoDegree(interval))%7];
+  const letter=LETTERS[(rootLetter+pianoDegree(interval,qual))%7];
   const target=mod12(PC[root]+interval),natural=NATURAL[letter];
   const d=mod12(target-natural);
   const accidental={0:"",1:"#",2:"##",10:"bb",11:"b"}[d];
@@ -60,7 +61,7 @@ function pianoNoteSpelling(root,interval){
 }
 function pianoChordNames(chord){
   const list=pianoIntervals(chord.qual),map=new Map();
-  list.forEach(int=>map.set(mod12(PC[chord.root]+int),pianoNoteSpelling(chord.root,int)));
+  list.forEach(int=>map.set(mod12(PC[chord.root]+int),pianoNoteSpelling(chord.root,int,chord.qual)));
   return map;
 }
 function pianoName(midi,map){
@@ -104,7 +105,7 @@ function pianoVoicings(chord){
   let variants=[
     {title:"Cerrado",left:leftRoot,right:rightKeys(0)},
     {title:"Abierto",left:leftRoot,right:rightKeys(1)},
-    {title:"Con séptima o sexta en el bajo",left:[lowRoot,shellMidi],right:rightKeys(2)}
+    {title:"Bajo con 7.ª / 6.ª",left:[lowRoot,shellMidi],right:rightKeys(2).filter(n=>mod12(n)!==pitchClass(shell))}
   ];
   if(core.includes(3)||core.includes(4)){
     const third=core.find(x=>x===3||x===4);
@@ -112,14 +113,20 @@ function pianoVoicings(chord){
     const lhShell=[thirdMidi,shellMidi].sort((a,b)=>a-b);
     const rh=core.filter(x=>x!==third&&x!==shell);
     const pcs=[...new Set(rh.map(pitchClass))].sort((a,b)=>a-b);
-    const right=pcs.map(pc=>60+pc);
+    let right=pcs.map(pc=>60+pc);
+    while(right.length&&Math.min(...right)<=Math.max(...lhShell))right=right.map(n=>n+12);
     variants.push({title:"Sin fundamental · con bajista",left:lhShell,right});
   }else{
     variants.push({title:"Otra disposición",left:leftRoot,right:rightKeys(2)});
   }
+  variants=variants.map(v=>{
+    let right=v.right.slice();
+    while(right.length&&Math.min(...right)<=Math.max(...v.left))right=right.map(n=>n+12);
+    return {...v,right};
+  });
   return variants.map(v=>{
     const present=new Set(v.left.concat(v.right).map(mod12));
-    const omitted=intervals.filter(x=>!present.has(mod12(rootPc+x))).map(x=>pianoNoteSpelling(chord.root,x));
+    const omitted=intervals.filter(x=>!present.has(mod12(rootPc+x))).map(x=>pianoNoteSpelling(chord.root,x,chord.qual));
     return {...v,bass:Math.min(...v.left.concat(v.right)),omitted,kind:"voicing"};
   });
 }
@@ -159,7 +166,7 @@ function renderPiano(){
   const isInversions=voices[0]&&voices[0].kind==="inversion";
   document.getElementById("resultKind").textContent=isInversions?"Inversiones de ":"Voicings de ";
   document.getElementById("chosenChord").textContent=c.name;
-  document.getElementById("notesLine").textContent=pianoIntervals(c.qual).map(x=>pianoNoteSpelling(c.root,x)).join(" · ");
+  document.getElementById("notesLine").textContent=pianoIntervals(c.qual).map(x=>pianoNoteSpelling(c.root,x,c.qual)).join(" · ");
   document.getElementById("count").textContent=voices.length+" "+(isInversions?"posiciones":"voicings");
   document.getElementById("shapes").innerHTML=voices.map((v,i)=>{
     const left=v.left.map(n=>pianoName(n,names)).join(" · ");
