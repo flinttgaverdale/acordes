@@ -184,7 +184,7 @@ function fillPianoQualities(){
   const prev=select.value;
   select.innerHTML="";
   const simple=document.createElement("optgroup");simple.label="Básicos";
-  GUITAR_QUALITIES.concat(["dim7","mM7","6","m6","aug"]).forEach(key=>{
+  (instrument==="piano"?GUITAR_QUALITIES.concat(["6","m6","aug"]):GUITAR_QUALITIES).forEach(key=>{
     if(!QUALITIES[key])return;
     const o=document.createElement("option");o.value=key;o.textContent=key==="maj"?"Mayor":key==="min"?"Menor":key==="mM7"?"m(maj7)":key;
     simple.appendChild(o);
