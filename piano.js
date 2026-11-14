@@ -4,37 +4,24 @@
 let instrument="guitar";
 let savedPianoSelection=null;
 const GUITAR_QUALITIES=["maj","min","7","maj7","m7","dim","sus2","sus4","m7b5"];
-/* Selección musical deliberadamente corta: 9, m11, 13 y
-   alteraciones muy habituales. El acorde maj11 natural no es una
-   recomendación estándar por el choque entre 3.ª mayor y 11 natural. */
-const PIANO_EXTRA_GROUPS=[
-  {label:"Extensiones habituales",options:[
-    ["add9","add9"],["9","9"],["maj9","maj9"],["m9","m9"],
-    ["m11","m11"],["13","13"]
-  ]},
-  {label:"Jazz · selección",options:[
-    ["6/9","6/9"],["9sus4","9sus4"],
-    ["7b9","7(♭9)"],["7#9","7(♯9)"],["maj7#11","maj7(♯11)"]
-  ]}
+/* Selector voluntariamente limitado a siete tipos, como pidió el usuario.
+   El círculo de quintas conserva sus acordes diatónicos. */
+const PIANO_CHOICES=[
+  ["9","9"],["11","11"],["13","13"],
+  ["7","7"],["maj7","Maj7"],["sus2","sus2"],["sus4","sus4"]
 ];
+const PIANO_EXTRA_GROUPS=[{label:"Acordes",options:PIANO_CHOICES}];
 const PIANO_DEFINITIONS={
-  "add9":[0,4,7,14],
-  "9":[0,4,7,10,14], "maj9":[0,4,7,11,14], "m9":[0,3,7,10,14],
-  "m11":[0,3,7,10,14,17],
-  // C13 en práctica jazzística: 1,3,5,b7,9,13; evitar la 11 natural contra la 3.
-  "13":[0,4,7,10,14,21],
-  "6/9":[0,4,7,9,14],
-  "9sus4":[0,5,7,10,14],
-  "7b9":[0,4,7,10,13], "7#9":[0,4,7,10,15],
-  "maj7#11":[0,4,7,11,18]
+  "9":[0,4,7,10,14],
+  "11":[0,4,7,10,14,17],
+  // En el dominante 13 la 11 natural no suele aparecer en la digitación.
+  "13":[0,4,7,10,14,21]
 };
 const PIANO_CORE={
-  "add9":[4,7,14],
-  "9":[4,10,14], "maj9":[4,11,14], "m9":[3,10,14],
-  "m11":[3,10,14,17], "13":[4,10,14,21],
-  "6/9":[4,9,14], "9sus4":[5,10,14],
-  "7b9":[4,10,13], "7#9":[4,10,15],
-  "maj7#11":[4,11,18]
+  "9":[4,10,14],
+  // La 11 natural choca con la tercera mayor; el voicing omite la 3.
+  "11":[10,14,17],
+  "13":[4,10,14,21]
 };
 Object.keys(PIANO_DEFINITIONS).forEach(key=>{
   QUALITIES[key]={name:key,int:PIANO_DEFINITIONS[key].slice()};
@@ -189,23 +176,20 @@ function fillPianoQualities(){
   const select=document.getElementById("quality");
   const prev=select.value;
   select.innerHTML="";
-  const simple=document.createElement("optgroup");simple.label="Básicos";
-  (instrument==="piano"?GUITAR_QUALITIES.concat(["dim7","6","m6","aug"]):GUITAR_QUALITIES).forEach(key=>{
-    if(!QUALITIES[key])return;
-    const o=document.createElement("option");o.value=key;o.textContent=key==="maj"?"Mayor":key==="min"?"Menor":key==="mM7"?"m(maj7)":key;
-    simple.appendChild(o);
-  });
-  select.appendChild(simple);
   if(instrument==="piano"){
-    PIANO_EXTRA_GROUPS.forEach(group=>{
-      const optgroup=document.createElement("optgroup");optgroup.label=group.label;
-      group.options.forEach(([key,label])=>{
-        const o=document.createElement("option");o.value=key;o.textContent=label;optgroup.appendChild(o);
-      });
-      select.appendChild(optgroup);
-    });
+    for(const [key,label] of PIANO_CHOICES){
+      const o=document.createElement("option");
+      o.value=key;o.textContent=label;select.appendChild(o);
+    }
+  }else{
+    for(const key of GUITAR_QUALITIES){
+      const o=document.createElement("option");
+      o.value=key;o.textContent=QUALITIES[key].name;
+      select.appendChild(o);
+    }
   }
-  if([...select.options].some(o=>o.value===prev))select.value=prev;
+  const allowed=[...select.options].map(o=>o.value);
+  select.value=allowed.includes(prev)?prev:(instrument==="piano"?"9":"maj");
 }
 const guitarResults=drawResults;
 drawResults=function(){
@@ -217,7 +201,7 @@ drawChords=function(){
   guitarChords();
   document.getElementById("extraToggle").textContent=custom?
     "Volver a los acordes de la tonalidad":
-    (instrument==="piano"?"Explorar extensiones y jazz":"Elegir otro acorde");
+    (instrument==="piano"?"Elegir otro acorde":"Elegir otro acorde");
 };
 function switchInstrument(next){
   if(next===instrument)return;
@@ -248,7 +232,7 @@ function switchInstrument(next){
   if(piano&&savedPianoSelection){
     document.getElementById("root").value=savedPianoSelection.root;
     quality.value=[...quality.options].some(o=>o.value===savedPianoSelection.qual)?
-      savedPianoSelection.qual:"maj";
+      savedPianoSelection.qual:"9";
     custom=true;
   }
   document.getElementById("resultKind").textContent=piano?"Inversiones de ":"Posiciones de ";
