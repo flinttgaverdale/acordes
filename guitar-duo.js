@@ -171,7 +171,10 @@ drawResults=function(){
     const upper=[...new Set(distinct)].filter(m=>m>p.base.topMidi);
     const label=upper.length?"La segunda amplía el registro agudo.":"La segunda aporta otra distribución de voces.";
     return '<section class="duo-pair"><div class="duo-heading">'+
-      '<strong>Combinación '+(i+1)+'</strong><span>Base + complemento</span></div>'+
+      '<strong>Combinación '+(i+1)+'</strong><span>'+
+      (p.base.rootBass?"Base + complemento":
+        "Bajo en "+spell(mod12(p.base.bassMidi),c.root.includes("b")))+
+      '</span></div>'+
       '<div class="duo-grid">'+duoCard(p.base,"Guitarra 1 · Base",c)+
       duoCard(p.lead,"Guitarra 2 · Voz superior",c)+'</div>'+
       '<p class="duo-hint">'+label+' Juntas completan '+c.name+'.</p></section>';
