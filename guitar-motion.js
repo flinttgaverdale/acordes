@@ -67,6 +67,11 @@ function motionSemitones(from,to,rootA,rootB){
     " ("+Math.abs(diff)+" semitono"+(Math.abs(diff)===1?"":"s")+
     (diff>0?" arriba":" abajo")+").";
 }
+function motionChordSymbol(pair,chord){
+  const bass=mod12(pair.base.bassMidi);
+  return bass===pcOf(chord.root)?chord.name:
+    chord.name+"/"+spell(bass,chord.root.includes("b"));
+}
 function motionExplain(selection,first,second){
   const {from,to,metric}=selection;
   const b=metric.commonBase.map(n=>duoPitchLabel(n,second.root));
@@ -99,7 +104,7 @@ function motionRender(){
     return;
   }
   const phase=(pair,chord,title)=>{
-    return '<section class="motion-phase"><h3>'+title+' · '+chord.name+'</h3>'+
+    return '<section class="motion-phase"><h3>'+title+' · '+motionChordSymbol(pair,chord)+'</h3>'+
       '<div class="duo-grid">'+duoCard(pair.base,"Guitarra 1",chord)+
       duoCard(pair.lead,"Guitarra 2",chord)+'</div></section>';
   };
