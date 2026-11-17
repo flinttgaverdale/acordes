@@ -226,6 +226,28 @@ footer{text-align:center;font-size:.74rem;color:var(--dim2);margin:28px 0 0}
 .duo-frets{font-size:.67rem;color:var(--dim);text-align:center;line-height:1.4;overflow-wrap:anywhere;margin-top:4px}
 .duo-hint{font-size:.74rem;color:var(--dim);line-height:1.45;margin:10px 3px 0}
 @media(max-width:440px){.duo-pair{padding:9px}.duo-grid{gap:7px}.duo-grid .shape{padding:9px 4px}}
+/* El análisis del enlace permanece plegado hasta que se consulta. */
+.motion-panel{border:1px solid var(--line2);border-radius:12px;background:var(--surface);
+  margin-top:13px;overflow:hidden}
+.motion-panel summary{display:flex;gap:9px;align-items:center;justify-content:space-between;
+  cursor:pointer;list-style:none;padding:13px 14px;font-size:.83rem;color:var(--txt);
+  font-weight:650}
+.motion-panel summary::-webkit-details-marker{display:none}
+.motion-panel summary::after{content:"⌄";color:var(--accent);font-size:1.12rem;line-height:1}
+.motion-panel[open] summary::after{content:"⌃"}
+.motion-panel summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.motion-panel summary small{font-size:.77rem;color:var(--accent);font-weight:550;margin-left:auto}
+.motion-body{padding:0 12px 14px}
+.motion-intro,.motion-line{font-size:.77rem;line-height:1.5;color:var(--dim);margin:0 4px 12px}
+.motion-line{color:var(--txt);margin:0 2px 6px}
+.motion-line strong{color:var(--accent)}
+.motion-phase{background:var(--surface2);border:1px solid var(--line2);
+  border-radius:12px;padding:10px 9px}
+.motion-phase h3{font-size:.83rem;font-weight:650;margin:1px 4px 10px}
+.motion-direction{text-align:center;color:var(--accent);font-size:1.4rem;padding:5px}
+.motion-analysis{border-top:1px solid var(--line2);margin-top:13px;padding:12px 4px 3px}
+@media(max-width:440px){.motion-panel summary{padding:12px 10px;gap:6px}
+  .motion-panel summary small{font-size:.7rem}.motion-body{padding:0 8px 12px}}
 /* Instrumentos: un solo círculo y motor armónico, resultados específicos */
 .instrument-tabs{display:flex;align-items:center;gap:5px;border-bottom:1px solid var(--line);margin:0 0 16px}
 .instrument-tabs button{font:inherit;font-size:.93rem;padding:12px 24px;margin-bottom:-1px;cursor:pointer;background:transparent;border:0;border-bottom:2px solid transparent;color:var(--dim);font-weight:600}
@@ -276,6 +298,10 @@ footer{text-align:center;font-size:.74rem;color:var(--dim2);margin:28px 0 0}
 </div>
 <div class="shapes" id="shapes" aria-live="polite"></div>
 <div class="duo-pairs" id="duoPairs" aria-live="polite" hidden></div>
+<details class="motion-panel" id="motionPanel" hidden>
+  <summary><span>Conducción de voces</span><small id="motionLabel"></small></summary>
+  <div class="motion-body" id="motionBody"></div>
+</details>
 <p class="legend" id="legendGuitar"><b>●</b> traste pulsado &nbsp;·&nbsp; ○ cuerda al aire &nbsp;·&nbsp; × no tocar. Diagramas: 6.ª cuerda a 1.ª.</p>
 <p class="legend" id="legendPiano" hidden><b>●</b> notas del acorde resaltadas. Cada inversión muestra las notas de grave a aguda; la nota más grave aparece después de /.</p>
 </section>
@@ -752,5 +778,6 @@ if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.ser
 </script>
 <script src="./piano.js?v=6"></script>
 <script src="./guitar-duo.js?v=1"></script>
+<script src="./guitar-motion.js?v=1"></script>
 </body>
 </html>
