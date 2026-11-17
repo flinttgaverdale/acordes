@@ -1,6 +1,6 @@
-// Acordes · Círculo de quintas — PWA cache v10
-const CACHE="acordes-circulo-v10";
-const ASSETS=["./","./index.html","./piano.js?v=6","./guitar-duo.js?v=3","./guitar-motion.js?v=2","./manifest.json","./icon-192.png","./icon-512.png"];
+// Acordes · Círculo de quintas — PWA cache v11
+const CACHE="acordes-circulo-v11";
+const ASSETS=["./","./index.html","./piano.js?v=6","./guitar-duo.js?v=4","./guitar-motion.js?v=2","./manifest.json","./icon-192.png","./icon-512.png"];
 self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>Promise.all(ASSETS.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting())));
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener("fetch",e=>{
