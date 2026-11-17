@@ -204,6 +204,28 @@ footer{text-align:center;font-size:.74rem;color:var(--dim2);margin:28px 0 0}
 @media(max-width:760px){body{padding:17px 13px 45px}.main-grid{grid-template-columns:1fr}.shapes{grid-template-columns:repeat(2,minmax(0,1fr))}.tuning-panel{flex-wrap:wrap;align-items:start}.tuning-panel .sectionhead{margin:0}.tuning-right{width:100%;justify-content:space-between}.topline{display:none}#circle{min-height:0}#circle svg{max-width:315px}}
 @media(max-width:440px){.panel{padding:14px}.tuning-panel{gap:10px}.tuning-right{display:block}#preset{width:100%;margin-bottom:9px}#strings{justify-content:center}.stringnote{flex:1}.degree strong{font-size:1rem}.shape{padding:12px 5px}.shape .head{margin:0 4px 8px}.shape .pos{font-size:.59rem}.results-top{align-items:start}.wheelhint{font-size:.72rem}}
 
+/* Dos guitarras: propuestas en pareja, sin controles extra en la rueda. */
+.duo-switch{display:flex;gap:3px;padding:3px;background:var(--bg);border:1px solid var(--line);
+  border-radius:10px;width:max-content;max-width:100%;margin:0 0 13px}
+.duo-switch button{font:inherit;font-size:.78rem;font-weight:550;cursor:pointer;border:0;
+  border-radius:7px;background:transparent;color:var(--dim);padding:9px 12px}
+.duo-switch button.on{color:var(--accent-ink);background:var(--accent);font-weight:680}
+.duo-switch button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.duo-pairs{display:grid;gap:13px}
+.duo-pair{background:var(--surface);border:1px solid var(--line2);border-radius:13px;padding:12px}
+.duo-heading{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:0 2px 10px}
+.duo-heading strong{color:var(--txt);font-size:.85rem}
+.duo-heading span{color:var(--dim);font-size:.71rem}
+.duo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.duo-grid .shape{min-width:0;padding:11px 7px}
+.duo-grid .shape .head{display:block;margin:0 4px 5px}
+.duo-grid .shape .cname{display:block;font-size:.82rem}
+.duo-grid .shape .pos{display:block;font-size:.69rem;white-space:normal;margin-top:3px;color:var(--dim)}
+.duo-grid .shape .meta{font-size:.72rem;color:var(--dim);text-align:center;line-height:1.5;overflow-wrap:anywhere}
+.duo-notes{font-size:.72rem;color:var(--txt);text-align:center;line-height:1.4;overflow-wrap:anywhere;margin-top:6px}
+.duo-frets{font-size:.67rem;color:var(--dim);text-align:center;line-height:1.4;overflow-wrap:anywhere;margin-top:4px}
+.duo-hint{font-size:.74rem;color:var(--dim);line-height:1.45;margin:10px 3px 0}
+@media(max-width:440px){.duo-pair{padding:9px}.duo-grid{gap:7px}.duo-grid .shape{padding:9px 4px}}
 /* Instrumentos: un solo círculo y motor armónico, resultados específicos */
 .instrument-tabs{display:flex;align-items:center;gap:5px;border-bottom:1px solid var(--line);margin:0 0 16px}
 .instrument-tabs button{font:inherit;font-size:.93rem;padding:12px 24px;margin-bottom:-1px;cursor:pointer;background:transparent;border:0;border-bottom:2px solid transparent;color:var(--dim);font-weight:600}
@@ -248,7 +270,12 @@ footer{text-align:center;font-size:.74rem;color:var(--dim2);margin:28px 0 0}
 </main>
 <section class="panel results-panel" id="results">
 <div class="results-top"><div><h2 class="sectionhead"><span class="num" id="resultIndex">04</span> <span id="resultKind">Posiciones de </span><span id="chosenChord">C</span></h2><div id="notesLine">C · E · G</div></div><div id="count">4 diagramas</div></div>
+<div class="duo-switch" id="duoSwitch" role="group" aria-label="Propuestas para una o dos guitarras">
+  <button type="button" id="soloView" aria-pressed="false">Una guitarra</button>
+  <button type="button" id="duoView" class="on" aria-pressed="true">Dos guitarras</button>
+</div>
 <div class="shapes" id="shapes" aria-live="polite"></div>
+<div class="duo-pairs" id="duoPairs" aria-live="polite" hidden></div>
 <p class="legend" id="legendGuitar"><b>●</b> traste pulsado &nbsp;·&nbsp; ○ cuerda al aire &nbsp;·&nbsp; × no tocar. Diagramas: 6.ª cuerda a 1.ª.</p>
 <p class="legend" id="legendPiano" hidden><b>●</b> notas del acorde resaltadas. Cada inversión muestra las notas de grave a aguda; la nota más grave aparece después de /.</p>
 </section>
@@ -724,5 +751,6 @@ if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.ser
 
 </script>
 <script src="./piano.js?v=6"></script>
+<script src="./guitar-duo.js?v=1"></script>
 </body>
 </html>
