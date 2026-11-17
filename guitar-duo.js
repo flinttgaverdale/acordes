@@ -66,7 +66,7 @@ function duoCandidates(rootPc,quality,tns){
   }
   return {wanted,shapes:[...shapes.values()]};
 }
-function duoPairings(rootPc,quality,tns){
+function duoPairings(rootPc,quality,tns,maxPairs=3){
   const {wanted,shapes}=duoCandidates(rootPc,quality,tns);
   const all=(1<<wanted.length)-1;
   function shortlist(items,score,limit){
@@ -100,13 +100,25 @@ function duoPairings(rootPc,quality,tns){
   }
   ranked.sort((a,b)=>b.score-a.score);
   const picked=[];
+  const usedBase=new Map(),usedLead=new Map(),usedZones=new Map();
   for(const pair of ranked){
-    if(picked.some(p=>p.base.frets.join(",")===pair.base.frets.join(",")
-      ||p.lead.frets.join(",")===pair.lead.frets.join(",")))continue;
-    if(picked.some(p=>Math.abs(p.base.minF-pair.base.minF)<2
-      &&Math.abs(p.lead.minF-pair.lead.minF)<2))continue;
+    const baseKey=pair.base.frets.join(","),leadKey=pair.lead.frets.join(",");
+    if(maxPairs<=3){
+      if(picked.some(p=>p.base.frets.join(",")===baseKey
+        ||p.lead.frets.join(",")===leadKey))continue;
+      if(picked.some(p=>Math.abs(p.base.minF-pair.base.minF)<2
+        &&Math.abs(p.lead.minF-pair.lead.minF)<2))continue;
+    }else{
+      // Para comparar acordes necesitamos alternativas, no solo las 3 mejores.
+      const zone=Math.floor(pair.base.minF/3)+":"+Math.floor(pair.lead.minF/3);
+      if((usedBase.get(baseKey)||0)>=3||(usedLead.get(leadKey)||0)>=3
+        ||(usedZones.get(zone)||0)>=5)continue;
+      usedBase.set(baseKey,(usedBase.get(baseKey)||0)+1);
+      usedLead.set(leadKey,(usedLead.get(leadKey)||0)+1);
+      usedZones.set(zone,(usedZones.get(zone)||0)+1);
+    }
     picked.push(pair);
-    if(picked.length===3)break;
+    if(picked.length===maxPairs)break;
   }
   return picked;
 }
