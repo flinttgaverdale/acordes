@@ -143,7 +143,11 @@ drawResults=function(){
   document.getElementById("soloView").setAttribute("aria-pressed",String(!duo));
   document.getElementById("duoView").setAttribute("aria-pressed",String(duo));
   pairsEl.hidden=!duo;soloEl.hidden=duo;
-  if(!duo){guitarAndPianoDrawResults();return;}
+  if(!duo){
+    document.getElementById("resultKind").textContent="Posiciones de ";
+    guitarAndPianoDrawResults();
+    return;
+  }
   const c=currentChord(),pairs=duoPairings(pcOf(c.root),c.qual,tuning);
   document.getElementById("resultKind").textContent="Dos guitarras · ";
   document.getElementById("chosenChord").textContent=c.name;
