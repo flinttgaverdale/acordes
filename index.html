@@ -226,6 +226,36 @@ footer{text-align:center;font-size:.74rem;color:var(--dim2);margin:28px 0 0}
 .duo-frets{font-size:.67rem;color:var(--dim);text-align:center;line-height:1.4;overflow-wrap:anywhere;margin-top:4px}
 .duo-hint{font-size:.74rem;color:var(--dim);line-height:1.45;margin:10px 3px 0}
 @media(max-width:440px){.duo-pair{padding:9px}.duo-grid{gap:7px}.duo-grid .shape{padding:9px 4px}}
+/* Una sola guitarra base y tres alternativas: evita repetir diagramas. */
+.duo-main{border:1px solid var(--line2);border-radius:12px;background:var(--surface);padding:12px}
+.duo-part-title,.duo-options-title{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:2px 2px 11px}
+.duo-part-title strong,.duo-options-title strong{font-size:.86rem;color:var(--txt)}
+.duo-part-title span,.duo-options-title span{font-size:.73rem;color:var(--dim)}
+.duo-main-card{display:flex;justify-content:center}
+.duo-main-card>.shape{width:min(100%,270px);padding:11px 12px}
+.duo-main-card .shape .head{display:block}
+.duo-main-card .shape .cname{font-size:.81rem;color:var(--accent)}
+.duo-main-card .shape .pos{display:block;margin-top:4px}
+.duo-main-card .duo-notes{font-size:.74rem}
+.duo-main>.duo-hint{margin:8px 3px 0;text-align:center}
+.duo-options-title{margin:5px 2px 0}
+.duo-alternatives{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.duo-alt{border:1px solid var(--line2);border-radius:12px;background:var(--surface2);padding:10px 7px}
+.duo-alt-head{min-height:32px;display:flex;align-items:center;padding:0 4px 7px}
+.duo-alt-head strong{color:var(--accent);font-size:.78rem;line-height:1.3;font-weight:650}
+.duo-alt .shape{padding:9px 4px;border:0;background:transparent}
+.duo-alt .shape .head{margin:0 4px 7px;display:block}
+.duo-alt .shape .cname{font-size:.73rem;color:var(--txt)}
+.duo-alt .shape .pos{display:block;white-space:normal;font-size:.68rem;margin-top:3px}
+.duo-alt>.duo-hint{margin:8px 3px 2px}
+@media(max-width:600px){
+ .duo-alternatives{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .duo-alt:last-child:nth-child(odd){grid-column:1/-1;max-width:290px;width:100%;justify-self:center}
+}
+@media(max-width:380px){
+ .duo-part-title,.duo-options-title{flex-wrap:wrap}
+ .duo-alternatives{gap:7px}.duo-alt{padding:8px 4px}
+}
 /* El análisis del enlace permanece plegado hasta que se consulta. */
 .motion-panel{border:1px solid var(--line2);border-radius:12px;background:var(--surface);
   margin-top:13px;overflow:hidden}
