@@ -200,7 +200,7 @@ drawResults=function(){
   document.getElementById("chosenChord").textContent=c.name;
   document.getElementById("notesLine").textContent=
     QUALITIES[c.qual].int.map(i=>spell(mod12(pcOf(c.root)+i),c.root.includes("b"))).join(" · ");
-  document.getElementById("count").textContent=pairs.length+" combinaci"+(pairs.length===1?"ón":"ones");
+  document.getElementById("count").textContent=pairs.length+" alternativa"+(pairs.length===1?"":"s");
 
   if(!pairs.length){
     pairsEl.innerHTML='<div id="empty">No se ha encontrado una base completa y acompañamientos cómodos en esta afinación.</div>';
