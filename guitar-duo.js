@@ -267,7 +267,9 @@ function duoPositionText(s){
 function duoCard(s,role,chord){
   const notes=[...new Set(s.pitches)].map(n=>duoPitchLabel(n,chord.root)).join(" · ");
   const tab=s.frets.map(f=>f<0?"×":f).join(" · ");
-  const roleName=s.bookName?role+" · "+s.bookName:role;
+  const baseName=role==="Posición habitual"&&!s.rootBass?
+    " · "+chord.name+"/"+spell(mod12(s.bassMidi),chord.root.includes("b")):"";
+  const roleName=s.bookName?role+" · "+s.bookName:role+baseName;
   return '<article class="shape"><div class="head"><span class="cname">'+roleName+'</span>'+
     '<span class="pos">'+duoPositionText(s)+'</span></div>'+
     '<div class="diagwrap">'+svgDiagram(s,tuning)+'</div>'+
