@@ -13,6 +13,8 @@ let guitarView="duo";
 /* Open D — Jeffrey Kunde / Ian McIntosh, Progressions: Alternate Tunings.
    PDF pp. 7–10. Transcripciones contrastadas contra D A D F# A D.
    Algunas formas del libro son parciales: no se tratan como triadas completas. */
+/* Selección adaptada que preserva las terceras omitidas en algunas formas del libro. */
+const OPEN_D_PRACTICAL={"9:maj":[[-1,0,2,3,4,2]]};
 const OPEN_D_REFERENCE={
  "2:maj":[[0,0,0,0,0,0],[0,0,4,3,5,0]],
  "7:maj":[[0,2,0,1,2,0],[5,5,5,5,5,5],[-1,10,9,8,-1,0]],
@@ -69,19 +71,55 @@ function openDStandards(rootPc,qual,tns,wanted){
   .map(f=>openDShape(f,wanted,{rootPc})).filter(Boolean)
   .filter(s=>s.mask===(1<<wanted.length)-1);
 }
+function openDPractical(rootPc,qual,tns,wanted){
+ if(duoTuningKey(tns)!=="openD")return [];
+ return (OPEN_D_PRACTICAL[rootPc+":"+qual]||[])
+  .map(f=>openDShape(f,wanted,{rootPc})).filter(Boolean)
+  .filter(s=>s.mask===(1<<wanted.length)-1);
+}
 function openDColors(rootPc,qual,tns,wanted){
  if(duoTuningKey(tns)!=="openD")return [];
  return (OPEN_D_COLORS[rootPc+":"+qual]||[])
    .map(o=>openDShape(o.f,wanted,{rootPc,expected:o.pcs,bookName:o.name,
      bookPage:o.page,bookTip:o.tip})).filter(Boolean);
 }
+
+/* Propuestas nuevas para cualquier otra tonalidad en Open D.
+   Inspiración: voces abiertas, terceras conservadas en G1, poca duplicación.
+   Estos cifrados son ADAPTACIONES CALCULADAS, no digitaciones atribuidas al libro. */
+function openDAdaptedColors(rootPc,qual,tns,base){
+ if(duoTuningKey(tns)!=="openD"||OPEN_D_COLORS[rootPc+":"+qual])return [];
+ const variants=qual==="maj"?[
+  ["add9","add9","Novena sobre el acorde mayor."],
+  ["sus2","sus2","Segunda suspendida sobre la tercera de la guitarra base."],
+  ["sus4","sus4","Cuarta suspendida: contraste de voces."]
+ ]:qual==="min"?[
+  ["m7","m7","Séptima menor que amplía el acorde base."]
+ ]:[];
+ const root=spell(rootPc,currentChord().root.includes("b"));
+ const candidates=[];
+ for(const [key,label,tip] of variants){
+  if(!QUALITIES[key])continue;
+  const extended=duoCandidates(rootPc,key,tns).shapes
+   .filter(s=>s.stringCount>=3&&s.stringCount<=4&&s.bassMidi>=50
+     &&s.topMidi>=60&&s.maxF<=12&&s.avgMidi>=base.avgMidi+2)
+   .sort((a,b)=>(b.openCount*13+b.pcs.length*5-b.maxF*1.7-b.duplicates*8+b.avgMidi*.2)
+            -(a.openCount*13+a.pcs.length*5-a.maxF*1.7-a.duplicates*8+a.avgMidi*.2));
+  if(!extended.length)continue;
+  const shape=extended[0];
+  candidates.push({...shape,bookName:root+label,bookTip:tip+" · Adaptación calculada para Open D."});
+ }
+ return candidates;
+}
+
 /* En modo solista conservamos cuatro zonas, priorizando los ejemplos válidos. */
 const standardPickBest=pickBest;
 pickBest=function(shapes){
  const c=currentChord(),rootPc=pcOf(c.root);
  if(duoTuningKey(tuning)!=="openD")return standardPickBest(shapes);
  const wanted=[...new Set(QUALITIES[c.qual].int.map(n=>mod12(rootPc+n)))];
- const book=openDStandards(rootPc,c.qual,tuning,wanted);
+ const book=openDPractical(rootPc,c.qual,tuning,wanted)
+  .concat(openDStandards(rootPc,c.qual,tuning,wanted));
  if(!book.length)return standardPickBest(shapes);
  const normal=standardPickBest(shapes),chosen=[];
  const different=s=>!chosen.some(x=>x.frets.join(",")===s.frets.join(","));
@@ -179,7 +217,8 @@ function duoPickBase(rootPc,quality,tns,all){
  const enough=valid.filter(s=>s.stringCount>=4);
  const pool=enough.length?enough:valid.filter(s=>s.stringCount>=3);
  if(!pool.length)return null;
- const fromBook=openDStandards(rootPc,quality,tns,all.wanted);
+ const fromBook=openDPractical(rootPc,quality,tns,all.wanted)
+   .concat(openDStandards(rootPc,quality,tns,all.wanted));
  for(const source of fromBook){
   const match=pool.find(v=>v.frets.join(",")===source.frets.join(","));
   if(match)return match;
@@ -226,7 +265,8 @@ function duoPairings(rootPc,quality,tns,maxPairs=3){
    const reachable=leads.filter(s=>s.maxF<=12);
    if(reachable.length>=3)leads=reachable;
  }
- const books=openDColors(rootPc,quality,tns,all.wanted);
+ const books=openDColors(rootPc,quality,tns,all.wanted)
+  .concat(openDAdaptedColors(rootPc,quality,tns,base));
  const scored=books.map((lead,i)=>({base,lead,
    score:duoLeadScore(base,lead,all.wanted)+90-i*4,style:"Color · "+lead.bookName}))
   .concat(leads.map(lead=>({base,lead,score:duoLeadScore(base,lead,all.wanted),
@@ -278,6 +318,15 @@ function duoCard(s,role,chord){
 }
 const guitarAndPianoDrawResults=drawResults;
 drawResults=function(){
+  const status=document.getElementById("engineInfo");
+  if(status){
+   const t=duoTuningKey(tuning),c=currentChord();
+   status.hidden=instrument==="piano";
+   if(instrument!=="piano")status.textContent=t==="openD"?
+      ("Open D · motor v13 · "+(OPEN_D_REFERENCE[pcOf(c.root)+":"+c.qual]||
+        OPEN_D_COLORS[pcOf(c.root)+":"+c.qual]?"posiciones del método Kunde":"adaptación musical calculada")):
+      ("Digitaciones calculadas · motor v13");
+  }
   const switcher=document.getElementById("duoSwitch");
   const pairsEl=document.getElementById("duoPairs");
   const soloEl=document.getElementById("shapes");
