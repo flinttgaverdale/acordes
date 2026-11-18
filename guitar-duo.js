@@ -221,6 +221,11 @@ function duoPairings(rootPc,quality,tns,maxPairs=3){
    &&s.topMidi>=60&&s.avgMidi>=base.avgMidi+4
    &&s.bassMidi>=50&&s.topMidi>=base.topMidi-2);
  if(!leads.length)leads=all.shapes.filter(s=>s!==base&&s.stringCount>=2&&s.stringCount<=4&&s.bassMidi>=50);
+ // En Open D priorizamos posiciones accesibles antes que saltos al traste 15.
+ if(duoTuningKey(tns)==="openD"){
+   const reachable=leads.filter(s=>s.maxF<=12);
+   if(reachable.length>=3)leads=reachable;
+ }
  const books=openDColors(rootPc,quality,tns,all.wanted);
  const scored=books.map((lead,i)=>({base,lead,
    score:duoLeadScore(base,lead,all.wanted)+90-i*4,style:"Color · "+lead.bookName}))
