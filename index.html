@@ -298,6 +298,8 @@ footer{text-align:center;font-size:.74rem;color:var(--dim2);margin:28px 0 0}
 @media(max-width:700px){.is-piano .shapes{grid-template-columns:1fr}}
 
 
+.engine-info{font-size:.69rem;color:var(--dim2);margin:6px 0 0;line-height:1.45}
+.engine-info[hidden]{display:none}
 /* Discreta referencia de procedencia, solo en variantes Open D. */
 .duo-source{margin:4px 0 0;color:var(--dim2);font-size:.65rem;text-align:center;letter-spacing:.01em}
 </style>
@@ -324,7 +326,7 @@ footer{text-align:center;font-size:.74rem;color:var(--dim2);margin:28px 0 0}
 </section>
 </main>
 <section class="panel results-panel" id="results">
-<div class="results-top"><div><h2 class="sectionhead"><span class="num" id="resultIndex">04</span> <span id="resultKind">Posiciones de </span><span id="chosenChord">C</span></h2><div id="notesLine">C · E · G</div></div><div id="count">4 diagramas</div></div>
+<div class="results-top"><div><h2 class="sectionhead"><span class="num" id="resultIndex">04</span> <span id="resultKind">Posiciones de </span><span id="chosenChord">C</span></h2><div id="notesLine">C · E · G</div><div class="engine-info" id="engineInfo" aria-live="polite">Motor Open D · v13</div></div><div id="count">4 diagramas</div></div>
 <div class="duo-switch" id="duoSwitch" role="group" aria-label="Propuestas para una o dos guitarras">
   <button type="button" id="soloView" aria-pressed="false">Una guitarra</button>
   <button type="button" id="duoView" class="on" aria-pressed="true">Dos guitarras</button>
@@ -775,6 +777,11 @@ function boot(){
  for(const [key,value] of Object.entries(TUNINGS)){
   const o=document.createElement("option");o.value=key;o.textContent=value.name;preset.appendChild(o);
  }
+ /* Recordar afinación: inicio Open D; después respetar la última elección. */
+ let savedTuning="openD";
+ try{const prior=localStorage.getItem("acordes:tuning");
+   if(prior&&TUNINGS[prior])savedTuning=prior;}catch(_){}
+ preset.value=savedTuning;tuning=TUNINGS[savedTuning].notes.slice();
  const root=document.getElementById("root"),qual=document.getElementById("quality");
  for(const n of ["C","C#","Db","D","D#","Eb","E","F","F#","Gb","G","G#","Ab","A","A#","Bb","B"]){
   const o=document.createElement("option");o.value=n;o.textContent=n;root.appendChild(o);
@@ -784,7 +791,11 @@ function boot(){
  }
  root.value="C";qual.value="maj";
  function showStrings(){document.getElementById("strings").innerHTML=tuning.map(n=>'<span class="stringnote">'+n+'</span>').join("");}
- preset.addEventListener("change",()=>{tuning=TUNINGS[preset.value].notes.slice();showStrings();drawResults();});
+ preset.addEventListener("change",()=>{
+   tuning=TUNINGS[preset.value].notes.slice();
+   try{localStorage.setItem("acordes:tuning",preset.value);}catch(_){}
+   showStrings();drawResults();
+ });
  document.getElementById("circle").addEventListener("click",e=>{
   const el=e.target.closest(".wheel-sector");if(el)chooseWheel(el);
  });
@@ -810,7 +821,7 @@ if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.ser
 
 </script>
 <script src="./piano.js?v=6"></script>
-<script src="./guitar-duo.js?v=5"></script>
+<script src="./guitar-duo.js?v=6"></script>
 <script src="./guitar-motion.js?v=2"></script>
 </body>
 </html>
