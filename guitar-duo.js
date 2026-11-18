@@ -100,8 +100,10 @@ function openDAdaptedColors(rootPc,qual,tns,base){
  const candidates=[];
  for(const [key,label,tip] of variants){
   if(!QUALITIES[key])continue;
-  const extended=duoCandidates(rootPc,key,tns).shapes
-   .filter(s=>s.stringCount>=3&&s.stringCount<=4&&s.bassMidi>=50
+  const colorSearch=duoCandidates(rootPc,key,tns);
+  const complete=(1<<colorSearch.wanted.length)-1;
+  const extended=colorSearch.shapes
+   .filter(s=>s.mask===complete&&s.stringCount>=3&&s.stringCount<=4&&s.bassMidi>=50
      &&s.topMidi>=60&&s.maxF<=12&&s.avgMidi>=base.avgMidi+2)
    .sort((a,b)=>(b.openCount*13+b.pcs.length*5-b.maxF*1.7-b.duplicates*8+b.avgMidi*.2)
             -(a.openCount*13+a.pcs.length*5-a.maxF*1.7-a.duplicates*8+a.avgMidi*.2));
@@ -323,9 +325,9 @@ drawResults=function(){
    const t=duoTuningKey(tuning),c=currentChord();
    status.hidden=instrument==="piano";
    if(instrument!=="piano")status.textContent=t==="openD"?
-      ("Open D · motor v13 · "+(OPEN_D_REFERENCE[pcOf(c.root)+":"+c.qual]||
+      ("Open D · motor v14 · "+(OPEN_D_REFERENCE[pcOf(c.root)+":"+c.qual]||
         OPEN_D_COLORS[pcOf(c.root)+":"+c.qual]?"posiciones del método Kunde":"adaptación musical calculada")):
-      ("Digitaciones calculadas · motor v13");
+      ("Digitaciones calculadas · motor v14");
   }
   const switcher=document.getElementById("duoSwitch");
   const pairsEl=document.getElementById("duoPairs");
